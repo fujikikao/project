@@ -3,10 +3,16 @@
     background-size: cover;
     text-align: center;
 }
+div {
+   
+    background: linear-gradient(to right, red, orange, yellow, green, blue, purple);
+    background-clip: text;  /* 按照文字裁切背景 */
+  }
 h1 {
+    
+    margin: 0;
     font-size: 50px;
-    color: white;
-    margin-top: 100px;
+    color: #0000;     /* 文字顏色設為透明 */
 }
 p {
     font-size: 20px;
