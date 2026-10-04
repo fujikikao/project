@@ -3,13 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#11100f">
+    <meta name="description" content="閃電樂團，讓每一道失真的吉他聲，都成為不想沉默的理由。查看樂團故事、團員介紹與 2026 巡演場次。">
     <link rel="stylesheet" href="style.css">
     <title>閃電樂團</title>
 </head>
 <body>
-   <div><h1>閃電樂團失語中</h1></div>
-    <p>這是閃電樂團一個簡單演唱旅程。</p>
-    <p id="倒數"></p>
+    <header class="hero" id="top">
+        <div class="hero__title"><h1>閃電樂團<span>失語中</span></h1></div>
+        <nav class="site-nav" aria-label="主要導覽">
+            <a href="#story">樂團故事</a>
+            <a href="#members">團員介紹</a>
+            <a href="#tour">巡演場次</a>
+        </nav>
+        <p class="hero__tagline">把說不出口的，都交給失真的吉他。</p>
+        <p class="countdown" id="倒數" aria-live="polite"></p>
+        <a class="hero__scroll" href="#story" aria-label="往下探索樂團故事">↓</a>
+    </header>
+
+    <main>
+        <section class="content-section story-section" id="story" aria-labelledby="story-title">
+            <div class="section-inner story-layout">
+                <div class="section-copy">
+                    <p class="eyebrow">01 / OUR STORY</p>
+                    <h2 id="story-title">從地下室開始，<br>一路唱到你面前。</h2>
+                    <p>四個在城市裡各自沉默的人，在一間漏雨的地下室遇見。閃電樂團把那些來不及說的失落和倔強，寫成一首首直球的搖滾。</p>
+                    <p>我們不急著給答案，只想在音量最大的一刻，陪你把心裡的話唱完。</p>
+                </div>
+                <figure class="story-photo">
+                    <img src="story.jpeg" alt="閃電樂團在地下室排練室裡一同演奏" width="1360" height="768" loading="lazy" decoding="async">
+                    <figcaption>THE EARLY DAYS · 那些歌，從這裡開始</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="content-section members-section" id="members" aria-labelledby="members-title">
+            <div class="section-inner">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">02 / THE BAND</p>
+                        <h2 id="members-title">四個聲音，一個方向。</h2>
+                    </div>
+                    <p>台上各自發光，合在一起就是閃電。</p>
+                </div>
+                <figure class="members-photo">
+                    <img src="intro.jpeg" alt="閃電樂團主唱、吉他手、貝斯手與鼓手" width="1360" height="768" loading="lazy" decoding="async">
+                    <figcaption>閃電樂團 · 四人編制</figcaption>
+                </figure>
+                <div class="member-list">
+                    <article class="member">
+                        <span class="member__number">01</span>
+                        <div><h3>林以聲</h3><p>主唱・詞曲</p></div>
+                        <p class="member__note">把沒說完的心事，唱成每個人的故事。</p>
+                    </article>
+                    <article class="member">
+                        <span class="member__number">02</span>
+                        <div><h3>周以安</h3><p>吉他</p></div>
+                        <p class="member__note">用一段 riff，劃開夜裡最安靜的時候。</p>
+                    </article>
+                    <article class="member">
+                        <span class="member__number">03</span>
+                        <div><h3>陳若晴</h3><p>貝斯</p></div>
+                        <p class="member__note">讓低頻穩穩接住，所有快要墜落的情緒。</p>
+                    </article>
+                    <article class="member">
+                        <span class="member__number">04</span>
+                        <div><h3>許柏勳</h3><p>鼓</p></div>
+                        <p class="member__note">每一下敲擊，都是繼續往前的理由。</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section tour-section" id="tour" aria-labelledby="tour-title">
+            <div class="section-inner">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">03 / LIVE 2026</p>
+                        <h2 id="tour-title">下一站，現場見。</h2>
+                    </div>
+                    <p>帶上你的聲音，和我們一起唱。</p>
+                </div>
+                <div class="tour-layout">
+                    <figure class="tour-poster">
+                        <img src="tour.jpeg" alt="閃電樂團早期巡演海報，記錄樂團的現場演出旅程" width="1360" height="768" loading="lazy" decoding="async">
+                        <figcaption>FROM THE ROAD · 巡演途中</figcaption>
+                    </figure>
+                    <div class="tour-details">
+                        <p class="tour-note">入場 19:00 ／ 開演 20:00<br>票務與場地資訊將於近期公布</p>
+                        <ol class="tour-list">
+                            <li><time datetime="2026-11-07">11.07 <span>週六</span></time><div><h3>台北</h3><p>Legacy Taipei</p></div><span class="tour-list__status">即將開唱</span></li>
+                            <li><time datetime="2026-11-14">11.14 <span>週六</span></time><div><h3>台中</h3><p>Legacy Taichung</p></div><span class="tour-list__status">巡演場次</span></li>
+                            <li><time datetime="2026-11-21">11.21 <span>週六</span></time><div><h3>高雄</h3><p>LIVE WAREHOUSE</p></div><span class="tour-list__status">巡演場次</span></li>
+                            <li><time datetime="2026-12-05">12.05 <span>週六</span></time><div><h3>台南</h3><p>TCRC Livehouse</p></div><span class="tour-list__status">巡演場次</span></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <a href="#top">閃電樂團 <span>↑ 回到頂端</span></a>
+        <p>把今晚，留給音樂。</p>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
