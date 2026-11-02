@@ -1,474 +1,1097 @@
-:root {
-    color-scheme: dark;
-    --ink: #11100f;
-    --paper: #eee8dd;
-    --muted: #aaa196;
-    --ember: #f08a4b;
-    --line: rgba(238, 232, 221, 0.17);
+#RainBow{
+	opacity:0.5;
+	position:absolute;
+	width:350%;
+	height:120%;
+	background: url(image/bg_Rainbow.png);
+	background-size:100%;
+	background-repeat:no-repeat; 
+	left:0%;
+	bottom:-10%;/*84%*/
+	z-index:0;	  
 }
-
-* {
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 88px;
-}
-
+/* 設定body */
 body {
+	/*
+	overflow-Y右邊垂直捲軸 設為hidden隱藏
+	background-color背景底色 設為#000黑色
+	font-family網頁字型 設為Microsoft JhengHei, Arial 微軟正黑體,Arial
+	*/	
+	overflow-Y:hidden;
+    background-color: #000;
+    text-align: center;    
+    font-family: Microsoft JhengHei, Arial;    
+}
+
+/* 設定內容顯示區域 */
+#content {
+	/*
+	min-height最小高度 設為100%
+	list-style清單風格 設為none不顯示
+	margin邊界 設為0
+	padding展開設定為0
+	white-space段落文本 設為nowrap 不斷行	
+	*/
+    min-height: 100%;	
+	list-style: none;     
     margin: 0;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: "Avenir Next", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    -webkit-font-smoothing: antialiased;
+    padding: 0; 
+    white-space: nowrap; 
 }
 
-a {
-    color: inherit;
+/* 設定超連結 */
+a {	
+	/*
+	color文字顏色 設為#F26522 橙橘色
+	*/
+    color: #F26522;
 }
 
-.hero {
-    position: relative;
-    display: flex;
-    min-height: 100vh;
-    min-height: 100svh;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 120px 24px 100px;
-    overflow: hidden;
-    text-align: center;
-    background-color: #17131b;
-    background-image: linear-gradient(180deg, rgba(10, 9, 14, 0.28), rgba(10, 9, 14, 0.3) 48%, rgba(10, 9, 14, 0.86)), url("bg.jpeg");
-    background-position: center;
-    background-size: cover;
+/* 繪製 背景 */
+#Bg{
+	/*
+	position位置 設為absolute絕對位置
+	width全景寬度 設為502% 
+	height全景高度 設為100%
+	*/
+	position:absolute;
+	width:502%;
+	height:100%;
+	background: url(image/bg_Sky.png);
+	background-size:100%;
+	background-repeat:repeat; 
+	left:0%;
+	top:0%;/*84%*/
+	z-index:0;	   
 }
 
-.hero__title {
-    background: linear-gradient(110deg, #f2cf9b 8%, #f0894d 52%, #c93d37 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    filter: drop-shadow(0 5px 24px rgba(0, 0, 0, 0.54));
+/* 繪製 主角 */
+#Player{
+	position:fixed;
+	width:139px;
+	height:203px;
+	background: url(image/player_Rwalk1.png);
+	background-size:139px 203px;
+	background-repeat:no-repeat; 
+	left:35%;
+	bottom:0%;/*84%*/
+	z-index:3;
+	margin:-186px 0 0 -168px;	
+    -webkit-animation-iteration-count:infinite;	
+	-webkit-animation-duration:1s;	
+    -webkit-animation-delay:0s; 	
 }
 
-.hero h1 {
-    margin: 0;
-    font-family: Georgia, "Noto Serif TC", serif;
-    font-size: 76px;
-    font-weight: 700;
-    line-height: 1.15;
+/* 動畫 人物右走 */
+@-webkit-keyframes RWalk{
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+      0% {			
+			background: url(image/player_Rwalk1.png);
+			background-size:139px 203px;
+		 }
+     50% {
+			background: url(image/player_Rwalk2.png);
+			background-size:139px 203px;			
+		 }
+    100% 
+		 {			
+			background: url(image/player_Rwalk1.png);
+			background-size:139px 203px;
+		 }
 }
 
-.hero h1 span {
-    display: block;
-    font-size: 0.68em;
-    letter-spacing: 0.12em;
+/* 動畫 人物左走 */
+@-webkit-keyframes LWalk{
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+      0% {			
+			background: url(image/player_Rwalk2.png);	
+			background-size:139px 203px;
+		 }
+     50% {
+			background: url(image/player_Rwalk1.png);
+			background-size:139px 203px;
+		 }
+    100% 
+		 {			
+			background: url(image/player_Rwalk2.png);
+			background-size:139px 203px;
+		 }
 }
 
-.site-nav {
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    gap: 42px;
-    padding: 19px 24px;
-    border-bottom: 1px solid rgba(238, 232, 221, 0.12);
-    background: rgba(17, 16, 15, 0.82);
-    backdrop-filter: blur(14px);
+/* 繪製 豬 */
+#Pig {
+	position:fixed;
+	width:471px;
+	height:386px;
+	background: url(image/Pig1.png);
+	background-size:100%;
+	background-repeat:no-repeat; 
+	left:75%;
+	bottom:0%;/*84%*/
+	z-index:0;
+	margin:-186px 0 0 -168px;
+	
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:1s;
+    -webkit-animation-delay:0s;    
 }
 
-.site-nav a {
-    color: rgba(238, 232, 221, 0.78);
-    font-size: 14px;
-    text-decoration: none;
-    transition: color 180ms ease;
+/* 動畫 豬走路 */
+@-webkit-keyframes PigWalk{
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+      0% {			
+			background: url(image/Pig1.png);
+			background-size:100%;
+			width:471px;
+			height:386px;	
+		 }
+     50% {
+			background: url(image/Pig2.png);
+			background-size:100%;
+			width:471px;
+			height:386px;
+		 }
+    
+	100% {			
+			background: url(image/Pig1.png);
+			background-size:100%;
+			width:471px;
+			height:386px;
+		 }
 }
 
-.site-nav a:hover,
-.site-nav a:focus-visible {
-    color: var(--ember);
+/* 繪製 蝙蝠1 */
+.Bat1 {
+	position:absolute;
+	width:188px;
+	height:190px;
+	background: url(image/Bat1.png);
+	background-size:100%;
+	background-repeat:no-repeat; 
+	left:220%;
+	top:500px;/*84%*/
+	z-index:3;
+	margin:-186px 0 0 -168px;
+	-webkit-animation-name:BatFly1;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:2s;
+    -webkit-animation-delay:0s;    
 }
 
-.hero__tagline {
-    margin: 27px 0 0;
-    color: rgba(248, 237, 223, 0.9);
-    font-size: 18px;
-    letter-spacing: 0.08em;
+/* 繪製 蝙蝠2 */
+.Bat2 {
+	position:absolute;
+	width:188px;
+	height:190px;
+	background: url(image/Bat1.png);
+	background-size:100%;
+	background-repeat:no-repeat; 
+	left:220%;
+	top:600px;/*84%*/
+	z-index:3;
+	margin:-186px 0 0 -168px;
+	-webkit-animation-name:BatFly2;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:2s;
+    -webkit-animation-delay:0s;    
 }
 
-.countdown {
-    min-height: 1.5em;
-    margin: 24px 0 0;
-    color: #f0bb83;
-    font-size: 14px;
-    letter-spacing: 0.08em;
+/* 繪製 蝙蝠3 */
+.Bat3 {
+	position:absolute;
+	width:188px;
+	height:190px;
+	background: url(image/Bat1.png);
+	background-size:100%;
+	background-repeat:no-repeat; 
+	left:220%;
+	top:700px;/*84%*/
+	z-index:3;
+	margin:-186px 0 0 -168px;
+	-webkit-animation-name:BatFly3;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:2s;
+    -webkit-animation-delay:0s;    
 }
 
-.hero__scroll {
-    position: absolute;
-    bottom: 30px;
-    display: grid;
-    width: 42px;
-    height: 42px;
-    place-items: center;
-    border: 1px solid rgba(238, 232, 221, 0.36);
-    border-radius: 50%;
-    color: var(--paper);
-    font-size: 20px;
-    text-decoration: none;
-    transition: border-color 180ms ease, transform 180ms ease;
+/* 動畫 蝙蝠1飛 */
+@-webkit-keyframes BatFly1 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {			
+		background: url(image/Bat1.png);
+		background-size:100%;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		background: url(image/Bat2.png);
+		background-size:100%;	
+		-webkit-transform: translateX(-15px) translateY(-25px);
+	}		
+	
+	75% {
+		background: url(image/Bat3.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
+	
+    100% {			
+		background: url(image/Bat1.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.hero__scroll:hover {
-    transform: translateY(3px);
-    border-color: var(--ember);
+/* 動畫 蝙蝠2飛 */
+@-webkit-keyframes BatFly2 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {			
+		background: url(image/Bat1.png);
+		background-size:100%;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		background: url(image/Bat2.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}		
+	
+	75% {
+		background: url(image/Bat3.png);
+		background-size:100%;	
+		-webkit-transform: translateX(-15px) translateY(-25px);
+	}
+	
+    100% {			
+		background: url(image/Bat1.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.content-section {
-    padding: 112px 32px;
-    scroll-margin-top: 0;
+/* 動畫 蝙蝠3飛 */
+@-webkit-keyframes BatFly3 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {			
+		background: url(image/Bat1.png);
+		background-size:100%;
+		-webkit-transform: translateX(-15px) translateY(-25px);
+	}	
+	
+	50% {
+		background: url(image/Bat2.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}		
+	
+	75% {
+		background: url(image/Bat3.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
+	
+    100% {			
+		background: url(image/Bat1.png);
+		background-size:100%;	
+		-webkit-transform: translateX(-15px) translateY(-25px);
+	}
 }
 
-.section-inner {
-    width: min(1120px, 100%);
-    margin: 0 auto;
+/* 繪製 飛豬1 */
+#FlyPig1{
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:357px;
+	height:419px;
+	position:absolute;
+	top:12%; 
+	left:225%; 
+	z-index:2;
+	-webkit-animation-name:PigFly1;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:10s;
+    -webkit-animation-delay:0s;    
 }
 
-.story-section {
-    background: linear-gradient(115deg, #191715 0%, #121110 58%, #201612 100%);
+/* 繪製 飛豬2 */
+#FlyPig2{
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:357px;
+	height:419px;
+	position:absolute;
+	top:5%; 
+	left:250%; 
+	z-index:2;
+	-webkit-animation-name:PigFly2;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:8s;
+    -webkit-animation-delay:0s;    
 }
 
-.story-layout {
-    display: grid;
-    grid-template-columns: 0.82fr 1.18fr;
-    align-items: center;
-    gap: 72px;
+/* 繪製 飛豬3 */
+#FlyPig3{
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:357px;
+	height:419px;
+	position:absolute;
+	top:20%; 
+	left:280%; 
+	z-index:2;
+	-webkit-animation-name:PigFly3;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:13s;
+    -webkit-animation-delay:0s;    
 }
 
-.eyebrow {
-    margin: 0 0 20px;
-    color: var(--ember);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
+/* 繪製 飛豬4 */
+#FlyPig4{
+	opacity:0.5;	
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:197px;
+	height:259px;
+	position:absolute;
+	top:28%; 
+	left:205%; 
+	z-index:1;	
 }
 
-.section-copy h2,
-.section-heading h2 {
-    margin: 0;
-    font-family: Georgia, "Noto Serif TC", serif;
-    font-size: 40px;
-    font-weight: 600;
-    line-height: 1.4;
+/* 繪製 飛豬5 */
+#FlyPig5{
+	opacity:0.5;	
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:197px;
+	height:259px;
+	position:absolute;
+	top:40%; 
+	left:270%; 
+	z-index:1;	  
 }
 
-.section-copy > p:not(.eyebrow) {
-    max-width: 440px;
-    margin: 24px 0 0;
-    color: #c2b9ad;
-    font-size: 16px;
-    line-height: 2;
+/* 繪製 飛豬6 */
+#FlyPig6{
+	opacity:0.7;	
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:125px;
+	height:187px;
+	position:absolute;
+	top:50%; 
+	left:245%; 
+	z-index:1;	 
 }
 
-figure {
-    margin: 0;
+#FlyPig7{
+	opacity:0.7;	
+	background:url(image/FlyPig.png);
+	background-repeat:no-repeat;
+	background-size:50%;
+	width:277px;
+	height:339px;
+	position:absolute;
+	top:30%; 
+	left:325%; 
+	z-index:1;	 
 }
 
-.story-photo img,
-.members-photo img,
-.tour-poster img {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
+/* 繪製 飛豬文字排版 */
+#FlyPigText{	
+	position:absolute;	
+	top:225px; 
+	left:10%; 
 }
 
-.story-photo img,
-.members-photo img {
-    border: 1px solid rgba(238, 232, 221, 0.2);
+/* 動畫 豬1飛 */
+@-webkit-keyframes PigFly1 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {		
+		opacity:0.8;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		opacity:1;	
+		-webkit-transform: translateX(-40px) translateY(-5px);
+	}		
+	
+	75% {
+		opacity:0.6;
+		-webkit-transform: translateX(-30px) translateY(0px);
+	}
+	
+    100% {			
+		opacity:1;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-figcaption {
-    margin-top: 12px;
-    color: #92887d;
-    font-size: 11px;
-    letter-spacing: 0.09em;
+/* 動畫 豬2飛 */
+@-webkit-keyframes PigFly2 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {		
+		opacity:1;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		opacity:.8;	
+		-webkit-transform: translateX(-30px) translateY(0px);
+	}		
+	
+	75% {
+		opacity:.6;
+		-webkit-transform: translateX(-40px) translateY(-5px);
+	}
+	
+    100% {			
+		opacity:1;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.members-section {
-    background: #11100f;
+/* 動畫 豬3飛 */
+@-webkit-keyframes PigFly3 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {		
+		opacity:1;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		opacity:.5;	
+		-webkit-transform: translateX(-50px) translateY(0px);
+	}		
+	
+	75% {
+		opacity:1;
+		-webkit-transform: translateX(-5px) translateY(-40px);
+	}
+	
+    100% {			
+		opacity:.8;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.section-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 32px;
-    margin-bottom: 34px;
+/* 繪製 氣球1 */
+#Balloon1{
+	background:url(image/Balloon.png);	
+	background-repeat:no-repeat;
+	background-size:100%;
+	width:130px;
+	height:410px;
+	position:absolute;
+	top:14%; 
+	left:350%; 
+	z-index:2;
+	-webkit-animation-name:BalloonFly1;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:10s;
+    -webkit-animation-delay:0s;    
 }
 
-.section-heading .eyebrow {
-    margin-bottom: 14px;
+/* 繪製 氣球2 */
+#Balloon2{
+	background:url(image/Balloon.png);
+	background-repeat:no-repeat;
+	background-size:100%;
+	width:130px;
+	height:410px;
+	position:absolute;
+	top:28%; 
+	left:370%; 
+	z-index:2;
+	-webkit-animation-name:BalloonFly2;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:15s;
+    -webkit-animation-delay:0s;    
 }
 
-.section-heading > p {
-    margin: 0 0 7px;
-    color: var(--muted);
-    font-size: 14px;
+/* 繪製 氣球3 */
+#Balloon3{
+	background:url(image/Balloon.png);
+	background-repeat:no-repeat;
+	background-size:100%;
+	width:130px;
+	height:410px;
+	position:absolute;
+	top:18%; 
+	left:390%; 
+	z-index:2;
+	-webkit-animation-name:BalloonFly3;
+    -webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:20s;
+    -webkit-animation-delay:0s;    
 }
 
-.members-photo img {
-    object-position: center 43%;
+/* 動畫 氣球1飛 */
+@-webkit-keyframes BalloonFly1 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		-webkit-transform: translateX(-10px) translateY(-40px);
+	}		
+	
+	75% {
+		-webkit-transform: translateX(10px) translateY(-30px);
+	}
+	
+    100% {	
+		-webkit-transform: translateX(px) translateY(0px);
+	}
 }
 
-.member-list {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin-top: 32px;
-    border-top: 1px solid var(--line);
+/* 動畫 氣球2飛 */
+@-webkit-keyframes BalloonFly2 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		-webkit-transform: translateX(-40px) translateY(-60px);
+	}		
+	
+	75% {
+		-webkit-transform: translateX(-10px) translateY(-10px);
+	}
+	
+	30% {
+		-webkit-transform: translateX(-10px) translateY(50px);
+	}
+	
+    100% {	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.member {
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    column-gap: 13px;
-    padding: 24px 18px 0 0;
+/* 動畫 氣球3飛 */
+@-webkit-keyframes BalloonFly3 {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}	
+	
+	50% {
+		-webkit-transform: translateX(0px) translateY(-60px);
+	}		
+	
+	75% {
+		-webkit-transform: translateX(-50px) translateY(-10px);
+	}
+	
+    100% {		
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.member__number {
-    padding-top: 4px;
-    color: var(--ember);
-    font-size: 11px;
+/* 繪製 氣球文字排版 */
+#BalloonText{	
+	position:absolute;	
+	top:50px; 
+	left:20%; 
 }
 
-.member h3,
-.member p {
-    margin: 0;
+/* 繪製 小鳥 */
+#Bird{
+	background-image:url(image/Bird1.png);	
+	background-size:100%;
+	background-repeat: no-repeat;   
+	width:210px; 
+	height:175px; 
+	position:absolute; 
+	top:10%; 
+	left:395%; 
+	z-index:0;
+	-webkit-animation-name:BirdFly;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:10s;
+    -webkit-animation-delay:0s; 
 }
 
-.member h3 {
-    font-size: 18px;
-    font-weight: 500;
+/* 動畫 小鳥飛 */
+@-webkit-keyframes BirdFly {
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+	0% {			
+		background: url(image/Bird3.png);
+		background-size:100%;
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
+
+	10% {
+		background: url(image/Bird4.png);
+		background-size:100%;	
+	}
+	
+	20% {
+		background: url(image/Bird3.png);
+		background-size:100%;	
+	}	
+
+	30% {
+		background: url(image/Bird4.png);
+		background-size:100%;
+	}
+	
+	40% {
+		background: url(image/Bird3.png);
+		background-size:100%;	
+	}
+	
+	50% {
+		background: url(image/Bird2.png);
+		background-size:100%;	
+		-webkit-transform: translateX(-760px) translateY(-20px);
+	}
+	
+	60% {
+		background: url(image/Bird1.png);
+		background-size:100%;			
+	}
+	
+	70% {
+		background: url(image/Bird2.png);
+		background-size:100%;
+	}
+	
+	80% {
+		background: url(image/Bird1.png);
+		background-size:100%;
+	}
+	
+	90% {			
+		background: url(image/Bird2.png);
+		background-size:100%;
+	}
+	
+    100% {			
+		background: url(image/Bird1.png);
+		background-size:100%;	
+		-webkit-transform: translateX(0px) translateY(0px);
+	}
 }
 
-.member div > p {
-    margin-top: 6px;
-    color: var(--ember);
-    font-size: 12px;
+/* 繪製 恐龍 */
+#Dinosaur{
+	background-image:url(image/Dinosaur.png);	
+	background-size:100%;
+	background-repeat: no-repeat; 
+	width:650px; 
+	height:550px; 
+	position:absolute; 
+	bottom:4%; 
+	left:355%; 
+	z-index:0;
 }
 
-.member .member__note {
-    grid-column: 2;
-    margin-top: 13px;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.8;
+/* 繪製 長頸鹿 */
+#Giraffe{
+	background-image:url(image/Giraffe.png);	
+	background-size:100%;
+	background-repeat: no-repeat;   
+	width:470px; 
+	height:570px; 
+	position:absolute; 
+	bottom:4%;
+	left:425%; 
+	z-index:0;
 }
 
-.tour-section {
-    background: linear-gradient(135deg, #171411, #211811 60%, #151210);
+/* 繪製 地板1 */
+#Floor1{
+	background-image:url(image/Floor1.png); 
+	background-repeat: repeat-x;   
+	width:501%; 
+	height:20px; 
+	position:absolute; 
+	bottom:0%; 
+	left:0px; 
+	z-index:1;
 }
 
-.tour-layout {
-    display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
-    align-items: start;
-    gap: 64px;
+/* 繪製 地板2 */
+#Floor2{
+	background-image:url(image/Floor2.png); 
+	background-repeat: repeat-x;   
+	width:509%; 
+	height:100px; 
+	position:absolute; 
+	bottom:2%; 
+	left:-100px; 
+	z-index:3;
 }
 
-.tour-poster {
-    padding: 12px;
-    background: #27211b;
+/* 繪製 草1 */
+#Grass1{
+	background-image:url(image/fg_Grass.png);
+	background-repeat: repeat-x;   
+	width:502.5%; 
+	height:10%; 
+	position:absolute; 
+	bottom:2%; 
+	left:-20px; 
+	z-index:1;
+	-webkit-animation-name:Grass1;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:8s;
+    -webkit-animation-delay:0s;    
 }
 
-.tour-poster img {
-    object-fit: contain;
+/* 動畫 草1 */
+@-webkit-keyframes Grass1{
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+      0% {			
+			opacity:1;			
+		 }
+     50% {
+			opacity:0.2;			 			
+		 }
+    100% 
+		 {			
+			opacity:1;			
+		 }
 }
 
-.tour-note {
-    margin: 0;
-    padding: 0 0 20px;
-    border-bottom: 1px solid var(--line);
-    color: #c4b7a8;
-    font-size: 13px;
-    line-height: 1.9;
+/* 繪製 草2 */
+#Grass2{
+	background-image:url(image/fg_Grass.png); 
+	background-repeat: repeat-x;   
+	width:502.5%; 
+	height:10%; 
+	position:absolute; 
+	bottom:2%; 
+	left:-60px; 
+	z-index:1;
+	-webkit-animation-name:Grass2;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:8s;
+    -webkit-animation-delay:0s;    
 }
 
-.tour-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+/* 動畫 草2 */
+@-webkit-keyframes Grass2{
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+      0% {			
+			opacity:0.2;			
+		 }
+     50% {
+			opacity:1;			 			
+		 }
+    100% 
+		 {			
+			opacity:0.2;			
+		 }
 }
 
-.tour-list li {
-    display: grid;
-    grid-template-columns: 90px 1fr auto;
-    align-items: center;
-    gap: 16px;
-    padding: 19px 0;
-    border-bottom: 1px solid var(--line);
+/* 前景對話框 */
+#Speak{
+	background-image:url(image/Speak.png);
+	background-repeat:no-repeat; 
+	background-size:100%;  
+	width:150px; 
+	height:0px; 
+	margin:-50px auto auto 450px;
+	z-index:3;
 }
 
-.tour-list time {
-    color: #f0bb83;
-    font-size: 17px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
+/* 前景洞窟 */
+#Cave{
+	background-image:url(image/Cave.png);
+	background-repeat:no-repeat; 
+	background-size:40%;  
+	width:235%; 
+	height:50%; 
+	position:absolute; 
+	top:50%; 
+	left:175%; 
+	z-index:3;
 }
 
-.tour-list time span {
-    display: block;
-    margin-top: 4px;
-    color: #948a7d;
-    font-size: 11px;
-    font-weight: 400;
+/* 繪製 柵欄1 */
+#Fences1{
+	background-image:url(image/Fences.png);	
+	background-repeat:repeat-x; 
+	background-size:5% 120px;  
+	width:110%; 
+	height:120px; 
+	position:absolute; 
+	bottom:3%; 
+	left:0%; 
+	z-index:2;
 }
 
-.tour-list h3,
-.tour-list p {
-    margin: 0;
+/* 繪製 柵欄2 */
+#Fences2{
+	background-image:url(image/Fences.png);	
+	background-repeat:repeat-x; 
+	background-size:5% 120px;  
+	width:100%; 
+	height:120px; 
+	position:absolute; 
+	bottom:3%; 
+	left:401%; 
+	z-index:2;
 }
 
-.tour-list h3 {
-    font-size: 17px;
-    font-weight: 500;
+/* 繪製 南瓜1 */
+#Pumpkin1{
+	background-image:url(image/Pumpkin1.png);
+	
+	background-repeat:no-repeat; 	
+	background-size:100%;
+	width:200px; 
+	height:250px;  	
+	position:absolute; 
+	bottom:0%; 
+	left:10%; 
+	z-index:3;
 }
 
-.tour-list div p {
-    margin-top: 5px;
-    color: #9f9589;
-    font-size: 12px;
+/* 繪製 南瓜2 */
+#Pumpkin2{
+	background-image:url(image/Pumpkin2.png);		
+	background-position:0% 75%;
+	background-repeat:no-repeat; 
+	background-size:100%; 
+	width:150px; 
+	height:180px; 
+	position:absolute; 
+	bottom:0%;  
+	left:90%; 
+	z-index:3;
 }
 
-.tour-list__status {
-    color: #baaa98;
-    font-size: 11px;
-    white-space: nowrap;
+/* 背景 */
+/* 繪製 背景雲1 */
+#bg_Cloud1{
+	opacity:0.6;	
+	position:absolute; 
+	top:13%; 
+	left:180%; 
+	z-index:0;
 }
 
-.tour-list li:first-child .tour-list__status {
-    color: var(--ember);
+/* 繪製 背景雲2 */
+#bg_Cloud2{
+	opacity:0.6;	
+	position:absolute; 
+	top:10%; 
+	left:230%; 
+	z-index:0;
 }
 
-.site-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 28px max(32px, calc((100% - 1120px) / 2));
-    border-top: 1px solid var(--line);
-    background: #0d0c0b;
+/* 繪製 背景雲3 */
+#bg_Cloud3{
+	opacity:0.6;	
+	position:absolute; 
+	top:25%; 
+	left:270%; 
+	z-index:0;
 }
 
-.site-footer a {
-    font-size: 14px;
-    text-decoration: none;
+/* 繪製 背景雲4 */
+#bg_Cloud4{
+	opacity:0.7;	
+	position:absolute; 
+	top:18%; 
+	left:340%; 
+	z-index:0;
 }
 
-.site-footer a span,
-.site-footer p {
-    color: var(--muted);
-    font-size: 12px;
+/* 繪製 背景雲5 */
+#bg_Cloud5{
+	opacity:0.9;	
+	position:absolute; 
+	top:5%; 
+	left:370%; 
+	z-index:1;
 }
 
-.site-footer a span {
-    margin-left: 14px;
+/* 繪製 背景雲6 */
+#bg_Cloud6{
+	opacity:0.7;	
+	position:absolute; 
+	top:10%; 
+	left:390%; 
+	z-index:0;
 }
 
-.site-footer p {
-    margin: 0;
+/* 繪製 背景雲7 */
+#bg_Cloud7{
+	opacity:0.7;	
+	position:absolute; 
+	top:10%; 
+	left:445%; 
+	z-index:0;
 }
 
-@media (max-width: 760px) {
-    .hero h1 {
-        font-size: 52px;
-    }
-
-    .site-nav {
-        gap: 0;
-        justify-content: space-around;
-        padding: 16px 10px;
-    }
-
-    .site-nav a {
-        font-size: 13px;
-    }
-
-    .hero__tagline {
-        font-size: 15px;
-        letter-spacing: 0.03em;
-    }
-
-    .content-section {
-        padding: 76px 22px;
-    }
-
-    .story-layout,
-    .tour-layout {
-        grid-template-columns: 1fr;
-        gap: 34px;
-    }
-
-    .section-copy h2,
-    .section-heading h2 {
-        font-size: 32px;
-    }
-
-    .section-heading {
-        display: block;
-    }
-
-    .section-heading > p {
-        margin-top: 15px;
-    }
-
-    .member-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        row-gap: 8px;
-    }
-
-    .member {
-        padding: 20px 12px 8px 0;
-    }
-
-    .tour-layout {
-        gap: 28px;
-    }
-
-    .site-footer {
-        padding: 24px 22px;
-    }
+/* 繪製 背景雲8 */
+#bg_Cloud8{
+	opacity:0.9;	
+	position:absolute; 
+	top:5%; 
+	left:470%; 
+	z-index:1;
 }
 
-@media (max-width: 420px) {
-    .hero h1 {
-        font-size: 42px;
-    }
-
-    .tour-list li {
-        grid-template-columns: 72px 1fr;
-        gap: 12px;
-    }
-
-    .tour-list__status {
-        grid-column: 2;
-        margin-top: -8px;
-    }
+/* 繪製 背景雲9 */
+#bg_Cloud9{
+	opacity:0.7;	
+	position:absolute; 
+	top:20%; 
+	left:480%; 
+	z-index:0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
+/* 繪製 背景雲10 */
+#bg_Cloud10{
+	opacity:0.7;	
+	position:absolute; 
+	top:10%; 
+	left:55%; 
+	z-index:0;
+}
 
-    *,
-    *::before,
-    *::after {
-        transition-duration: 0.01ms !important;
-    }
+/* 標題 */
+/* 繪製 標題雲 */
+.Cloud{
+background:url(image/Cloud.png);
+background-size:100%;
+width:380px;
+height:200px;
+}
+
+/* 標題文字排版 */
+.title{
+line-height:170px;
+}
+
+/* 標題雲1排版 */
+#Cloud1 {
+	position:absolute;
+	top:5%;	
+	left:5%;	
+}
+
+/* 標題雲2排版 */
+#Cloud2 {
+	position:absolute;
+	top:5%;
+	left:106%;
+}
+
+/* 標題雲3排版 */
+#Cloud3 {
+	position:absolute;
+	top:5%;
+	left:203%;	
+}
+
+/* 標題雲4排版 */
+#Cloud4 {
+	position:absolute;
+	top:5%;	
+	left:321%;
+	z-index:1;
+}
+
+/* 標題雲5排版 */
+#Cloud5 {
+	position:absolute;
+	top:5%;	
+	left:415%;	
+}
+
+
+/* 內容 */
+/* 繪製 內容1 */
+#content1 {
+	position:absolute;
+	top:30%;	
+	left:106%;
+}
+
+/* 繪製 內容2 */
+#content2 {
+	position:absolute;
+	top:45%;	
+	left:106%;
+}
+
+/* 繪製 內容3 */
+#content3 {
+	position:absolute;
+	top:60%;	
+	left:106%;
+}
+
+/* 繪製 內容4 */
+#content4 {
+	position:absolute;
+	top:50%;	
+	left:18%;
+	-webkit-animation-name:content4;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:3s;
+    -webkit-animation-delay:0s;
+}
+
+/* 動畫 內容4 */
+@-webkit-keyframes content4{
+	/*
+	%數為動畫的時間軸長度百分比
+	*/
+      0% {			
+			opacity:1;			
+		 }
+     50% {
+			opacity:0.2;			 			
+		 }
+    100% 
+		 {			
+			opacity:1;			
+		 }
 }

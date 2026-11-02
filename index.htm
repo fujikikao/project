@@ -1,0 +1,416 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+<title>3cat</title>
+
+<!-- 先重置css設定後，再載入自設定的css，排版效率才會提升 -->
+<link href="Reset.css" rel="stylesheet"  >
+<link href="style.css" rel="stylesheet"  >
+</head>
+
+<body onmousewheel="return false;">
+<!-- 內容 -->
+<div id="content">
+
+	<!-- 圖層 -->
+	<div id="Floor">	
+		<!-- 底層 -->
+		<!-- 背景 -->
+		<div id="Bg"></div>
+		<div id="RainBow"></div>
+		
+		<!-- 恐龍 -->
+		<div id="Dinosaur"></div>
+		
+		<!-- 長頸鹿 -->
+		<div id="Giraffe">		
+			<!-- 信箱超連結 -->
+			<a id="Speak" href="mailto:tonykao@stust.edu.tw?subject=請輸入標題&body=請輸入內容"></a>
+		</div>
+		<!-- 底層 -->
+		<!-- 草1 -->
+		<div id="Grass1"></div>
+		
+		<!-- 草2 -->
+		<div id="Grass2"></div>
+		
+		<!-- 背景雲 -->
+		<div id="bg_Cloud">
+			<img id="bg_Cloud1" class="bg" src="image/Cloud.png" width="280px" height="162px" />
+			<img id="bg_Cloud2" class="bg" src="image/Cloud.png" width="340px" height="165px" />
+			<img id="bg_Cloud3" class="bg" src="image/Cloud.png" width="340px" height="165px" />
+			<img id="bg_Cloud4" class="bg" src="image/Cloud.png" width="300px" height="122px" />
+			<img id="bg_Cloud5" class="bg" src="image/Cloud.png" width="200px" height="132px" />
+			<img id="bg_Cloud6" class="bg" src="image/Cloud.png" width="340px" height="165px" />
+			<img id="bg_Cloud7" class="bg" src="image/Cloud.png" width="180px" height="112px" />
+			<img id="bg_Cloud8" class="bg" src="image/Cloud.png" width="240px" height="152px" />
+			<img id="bg_Cloud9" class="bg" src="image/Cloud.png" width="180px" height="112px" />
+			<img id="bg_Cloud10" class="bg" src="image/Cloud.png" width="340px" height="165px" />
+		</div>
+		
+		<!-- 中層 -->	
+		<!-- 柵欄1 -->
+		<div id="Fences1"></div>
+		
+		<!-- 柵欄2 -->
+		<div id="Fences2"></div>
+		
+		<!-- 地板1 -->
+		<div id="Floor1"></div>	
+
+		<!-- 地板2(小土撥) -->		
+		<div id="Floor2"></div>	
+		
+		<!-- 上層 -->
+		<!-- 內容4(操作提示) -->
+		<font size="5" color="#666666" id="content4">
+		請按鍵盤←或→鍵或拉動水平捲軸，慢慢控制人物移動速度
+		</font>
+		
+		<!-- 洞窟 -->
+		<div id="Cave"></div>
+		
+		<!-- 南瓜1 -->
+		<div id="Pumpkin1"></div>
+		
+		<!-- 南瓜2 -->
+		<div id="Pumpkin2"></div>
+	</div>
+	
+	<!-- 標題 -->
+	<div id="title">
+		<!-- 標題雲1 -->
+		<div class="Cloud" id="Cloud1">
+			<!-- 標題文字 -->
+			<font class="title" size="7" color="#F26522">Tony個人履歷</font>			
+		</div>
+		
+		<!-- 標題雲2 -->
+		<div class="Cloud" id="Cloud2">
+			<!-- 標題文字 -->
+			<font class="title" size="7" color="#F26522">專業能力</font>			
+		</div>
+		<!-- 內容1 -->
+		<font size="7" color="#F26522" id="content1">3D Maya</font>		
+		<!-- 內容2 -->
+		<font size="7" color="#F26522" id="content2">Blender</font>		
+		<!-- 內容3 -->
+		<font size="7" color="#F26522" id="content3">Unity</font>
+		
+		<!-- 標題雲3 -->
+		<div class="Cloud" id="Cloud3">
+			<!-- 標題文字 -->
+			<font class="title" size="7" color="#F26522">設計資歷</font>			
+		</div>
+		
+		<!-- 標題雲4 -->
+		<div class="Cloud" id="Cloud4">
+			<!-- 標題文字 -->
+			<font class="title" size="7" color="#F26522">作品集</font>			
+		</div>
+		
+		<!-- 標題雲5 -->
+		<div class="Cloud" id="Cloud5">
+			<!-- 標題文字 -->
+			<font class="title" size="7" color="#F26522">有興趣請聯繫我</font>			
+		</div>		
+	</div>
+	
+	<!-- 角色 -->
+	<div id="Character">
+		<!-- 主角 -->
+		<div id="Player"></div>
+		
+		<!-- 豬 -->
+		<div id="Pig"></div>
+		
+		<!-- 第一層蝙蝠 -->
+		<div id="Bat1" class="Bat1"></div>
+		<div id="Bat2" class="Bat2"></div>
+		<div id="Bat3" class="Bat3"></div>
+		<div id="Bat4" class="Bat2"></div>
+		
+		<!-- 第二層蝙蝠 -->
+		<div id="Bat5" class="Bat3"></div>
+		<div id="Bat6" class="Bat1"></div>
+		<div id="Bat7" class="Bat2"></div>
+		
+		<!-- 第三層蝙蝠 -->
+		<div id="Bat8" class="Bat2"></div>
+		<div id="Bat9" class="Bat3"></div>
+		<div id="Bat10" class="Bat1"></div>
+				
+		<!-- 飛豬1 -->
+		<a id="FlyPig1" href="https://neo-0402.github.io/cat/">
+			<!-- 飛豬文字 -->
+			<font id="FlyPigText" size="6" color="#F26522" >網頁設計</font>
+		</a>
+		
+		<!-- 飛豬2 -->
+		<a id="FlyPig2" href="#2">
+			<!-- 飛豬文字 -->
+			<font id="FlyPigText" size="6" color="#F26522" >遊戲設計</font>
+		</a>
+		
+		<!-- 飛豬3 -->
+		<a id="FlyPig3" href="#3">
+			<!-- 飛豬文字 -->
+			<font id="FlyPigText" size="6" color="#F26522">互動設計</font>
+		</a>
+		
+		<!-- 飛豬4 -->
+		<div id="FlyPig4"></div>
+		
+		<!-- 飛豬5 -->
+		<div id="FlyPig5"></div>
+		
+		<!-- 飛豬6 -->
+		<div id="FlyPig6"></div>
+		
+		<!-- 飛豬7 -->
+		<div id="FlyPig7"></div>
+		
+		<!-- 氣球1 -->
+		<a id="Balloon1" href="#1">
+			<!-- 氣球文字 -->
+			<font id="BalloonText" size="6" color="#F26522">互動</font>
+		</a>
+		
+		<!-- 氣球2 -->
+		<a id="Balloon2" href="#2">
+			<!-- 氣球文字 -->
+			<font id="BalloonText" size="6" color="#F26522">繪畫</font>
+		</a>
+		
+		<!-- 氣球3 -->
+		<a id="Balloon3" href="#3">
+			<!-- 氣球文字 -->
+			<font id="BalloonText" size="6" color="#F26522">網頁</font>
+		</a>
+		
+		<!-- 小鳥 -->
+		<div id="Bird"></div>
+	</div>
+</div>
+
+<!-- 引入jQuery插件 -->
+<script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
+
+<script type="text/javascript">
+//設定視差滾動速度差
+
+var strength1 = 50;
+var strength2 = 200;
+var strength3 = 500;
+
+//取得視窗寬度跟高度
+var ScreenWidth = $(window).width();
+var ScreenHeight = $(window).height();
+
+//取得視窗長寬比
+var Screen = ScreenWidth / ScreenHeight;
+
+//水平軸
+var currentScroll;
+
+//當捲軸滾動時
+$(window).scroll(function()
+{  	
+	//取得水平軸位置
+    currentScroll = $(this).scrollLeft();
+	
+	//橫向視差滾動 
+	//當前水平軸位置 - (當前視窗寬度 / 2) = 背景滾動值
+    var pageX = currentScroll - ($(window).width() / 2); 
+	
+	//1 * 背景滾動值 * 1(1由前向後,-1由後向前) = 滾動方向	
+    var newvalueX = 1* pageX * 1;	
+	
+	//設定該標籤的CSS background-position 背景位置值 來移動背景產生視差滾動的效果
+    $('.bg').css("background-position", (strength1 / $(window).width() * newvalueX * -1)+"px "+"0px");
+	
+	$('#RainBow').css("background-repeat","no-repeat");
+	$('#RainBow').css("background-position", (strength1 / $(window).width() * newvalueX * -1)+"px "+"0px");		
+    $('#Grass1').css("background-position", (strength2 / $(window).width() * newvalueX * -1)+"px "+"0px");
+	$('#Grass2').css("background-position", (strength2 / $(window).width() * newvalueX * -1)+"px "+"0px");	
+    $('#Floor2').css("background-position", (strength3 / $(window).width() * newvalueX * -1)+"px "+"0px");
+	
+	//當長寬比是寬螢幕1.7比時
+	if(Screen > 1.7)
+	{
+		//調整背景寬度
+		$('#bg').css("width", "506%");
+		$('#Floor2').css("width", "506%");
+		$('#Grass1').css("width", "502%");
+		$('#Grass2').css("width", "502%");
+	}	
+});
+</script >
+
+<script type="text/javascript">
+//當前視窗寬度 / 7(排版的當前視窗寬1280px / 當時固定的觸發像素位置182px = 7)= 第一個觸發點
+var ActionPoint1 = ScreenWidth / 7;
+
+//當前視窗寬度 / 1.25 = 第二個觸發點
+var ActionPoint2 = ScreenWidth / 1.25;
+
+//當前視窗寬度 / 0.315 = 第三個觸發點
+var ActionPoint3 = ScreenWidth / 0.315;
+
+//當前視窗寬度 / 0.25 = 第四個觸發點
+var ActionPoint4 = ScreenWidth / 0.25;
+
+//當前視窗寬度 / 0.19 = 第五個觸發點
+var ActionPoint5 = ScreenWidth / 0.19;
+
+//當前視窗高度 / 2.50 = 跳躍起跳最高點高度
+var JumpUp = ScreenHeight / 2.50;
+
+//當前視窗高度 / 1.25 = 跳躍降落最低點高度
+var JumpDown = ScreenHeight / 1.25;	
+
+//舊水平捲軸位置
+var previousScroll  = 0;
+
+//時間計時
+var timer;
+
+//豬跳躍狀態
+var PigJump = 0;
+
+//當捲軸滾動時
+$(window).scroll(function(){  
+	
+	//取得視窗寬度跟高度
+	ScreenWidth = $(window).width();
+	ScreenHeight = $(window).height();
+	
+	//當前視窗寬度 / 7(排版的當前視窗寬1280px / 當時固定的觸發像素位置182px = 7)= 第一個觸發點
+	ActionPoint1 = ScreenWidth / 7;
+	
+	//當前視窗寬度 / 1.25 = 第二個觸發點
+	ActionPoint2 = ScreenWidth / 1.25;
+	
+	//當前視窗寬度 / 0.315 = 第三個觸發點
+	ActionPoint3 = ScreenWidth / 0.315;
+	
+	//當前視窗寬度 / 0.25 = 第四個觸發點
+	ActionPoint4 = ScreenWidth / 0.25;
+	
+	//當前視窗寬度 / 0.19 = 第五個觸發點
+	ActionPoint5 = ScreenWidth / 0.19;
+	
+	//當前視窗高度 / 1.25 = 跳躍起跳最高點高度
+	JumpUp = ScreenHeight / 3.31;
+	
+	//當前視窗高度 / 1.25 = 跳躍降落最低點高度
+	JumpDown = 0;
+	
+	//取得水平軸位置
+	currentScroll = $(this).scrollLeft();
+	
+	//豬播放走路動畫
+	$("#Pig").css('webkitAnimationName', 'PigWalk');
+	
+	//判斷水平軸向右捲動
+	if(currentScroll > previousScroll)
+	{		
+		//人物向右走
+		$("#Player").css('webkitAnimationName', 'RWalk');	
+		
+		//只要每過完250毫秒就執行funtion idel
+		clearTimeout(timer);		
+		timer = setTimeout(idel , 250); 					
+	}
+	
+	//判斷水平軸向左捲動
+	else if(currentScroll < previousScroll)
+	{
+		//人物向右走
+		$("#Player").css('webkitAnimationName', 'LWalk');
+			
+		//只要每過完250毫秒就執行funtion idel
+		clearTimeout(timer);		
+		timer = setTimeout(idel , 250); 		
+	}
+	
+	//當水平軸捲動到第一個觸發點
+	if(currentScroll > ActionPoint1)
+	{					
+		//判斷豬是否跳躍過第一次
+		if(PigJump == 0)
+		{			
+			//隊列動畫實現跳躍一次
+			$("#Pig").animate({bottom:"250px"});
+			$("#Pig").animate({bottom:"0px"});
+			PigJump = 1;
+		}		
+	}
+	
+	//當水平軸還沒捲動到第一個觸發點
+	else if(currentScroll < ActionPoint1)
+	{
+		//把豬的跳躍狀態恢復為0
+		PigJump = 0;
+	}
+	
+	//當水平軸捲動到第二個觸發點
+	if(currentScroll >= ActionPoint2)
+	{				
+		//同時飛出蝙蝠
+		$("#Bat1").animate({top:"40%",left:"140%"}, 3500);
+		$("#Bat2").animate({top:"40%",left:"155%"}, 3500);
+		$("#Bat3").animate({top:"40%",left:"170%"}, 4000);
+		$("#Bat4").animate({top:"40%",left:"185%"}, 5000);
+		$("#Bat5").animate({top:"57%",left:"140%"}, 3500);
+		$("#Bat6").animate({top:"57%",left:"155%"}, 4000);
+		$("#Bat7").animate({top:"57%",left:"170%"}, 5000);
+		$("#Bat8").animate({top:"75%",left:"140%"}, 3500);
+		$("#Bat9").animate({top:"75%",left:"155%"}, 4000);
+		$("#Bat10").animate({top:"75%",left:"170%"}, 5000);		
+	}
+	
+	//當水平軸捲動到第三個觸發點
+	if(currentScroll > ActionPoint3)
+	{		
+		//判斷豬是否跳躍過第二次
+		if(PigJump == 1)
+		{			
+			//隊列動畫實現跳躍一次
+			$("#Pig").animate({bottom:JumpUp});
+			$("#Pig").animate({bottom:JumpDown});
+			PigJump = 2;
+		}		
+	}
+	
+	//當水平軸還沒捲動到第三個觸發點，而且水平軸已經捲動過第一個觸發點
+	else if(currentScroll < ActionPoint3 && currentScroll > ActionPoint1)
+	{
+		//把豬的跳躍狀態恢復為1
+		PigJump = 1;
+	}
+	
+	//當水平軸已經捲動過第四個觸發點，而且水平軸還沒捲動超過第五個觸發點
+	if (currentScroll > ActionPoint4 && currentScroll < ActionPoint5)
+	{
+		$("#Speak").animate({height:"150px"}, 2000);
+	}
+	
+	//遞回現在水平軸捲動位置 給 舊水平軸捲動位置
+	previousScroll = currentScroll;     
+}); 
+
+//當沒有捲動的時候 
+var idel = function () 
+{        	
+	//玩家動畫取消播放
+	$("#Player").css('webkitAnimationName', '');
+	
+	//豬動畫取消播放
+	$("#Pig").css('webkitAnimationName', '');	 
+};  
+</script>
+
+</body>
+</html>
