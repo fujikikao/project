@@ -66,7 +66,7 @@
 		<!-- 上層 -->
 		<!-- 內容4(操作提示) -->
 		<font size="5" color="#666666" id="content4">
-		請向上捲動頁面，從最底部開始往上瀏覽
+		使用方向鍵移動角色，或移動滑鼠讓角色跟隨；向上捲動頁面瀏覽場景
 		</font>
 		
 		<!-- 洞窟 -->
@@ -207,6 +207,13 @@ var ScreenHeight = $(window).height();
 var currentScroll;
 var sceneLength = ScreenWidth * 5.02;
 var sceneElements = [];
+var playerPosition = {x: 0, y: 0};
+var playerTarget = null;
+var playerKeys = {};
+var playerControlled = false;
+var playerFrame = null;
+var previousPlayerFrame = 0;
+var playerSpeed = 280;
 
 function getScrollDistance()
 {
@@ -339,6 +346,12 @@ function updateVerticalPlayer()
 		return;
 	}
 
+	if (playerControlled)
+	{
+		renderPlayerPosition();
+		return;
+	}
+
 	var viewportHeight = $(window).height();
 	var playerHeight = $("#Player").outerHeight();
 	var maxScroll = getScrollDistance();
@@ -350,13 +363,180 @@ function updateVerticalPlayer()
 	$("#Player").css("top", ($(window).scrollTop() + screenTop) + "px");
 }
 
+function clampPlayerPosition()
+{
+	var playerWidth = $("#Player").outerWidth();
+	var playerHeight = $("#Player").outerHeight();
+	playerPosition.x = Math.max(0, Math.min($(window).width() - playerWidth, playerPosition.x));
+	playerPosition.y = Math.max(0, Math.min($(window).height() - playerHeight, playerPosition.y));
+}
+
+function renderPlayerPosition()
+{
+	clampPlayerPosition();
+	$("#Player").css({
+		left: playerPosition.x + "px",
+		top: ($(window).scrollTop() + playerPosition.y) + "px"
+	});
+}
+
+function setPlayerAnimation(horizontal, vertical)
+{
+	var animation = Math.abs(horizontal) > Math.abs(vertical)
+		? (horizontal < 0 ? "LWalk" : "RWalk")
+		: "PlayerFly";
+	$("#Player").css({animationName: animation, webkitAnimationName: animation});
+}
+
+function movePlayer(timestamp)
+{
+	var delta = previousPlayerFrame ? Math.min((timestamp - previousPlayerFrame) / 1000, 0.05) : 0;
+	var horizontal = 0;
+	var vertical = 0;
+	previousPlayerFrame = timestamp;
+
+	if (playerKeys.ArrowLeft || playerKeys.ArrowRight || playerKeys.ArrowUp || playerKeys.ArrowDown)
+	{
+		horizontal = (playerKeys.ArrowRight ? 1 : 0) - (playerKeys.ArrowLeft ? 1 : 0);
+		vertical = (playerKeys.ArrowDown ? 1 : 0) - (playerKeys.ArrowUp ? 1 : 0);
+		var distance = playerSpeed * delta / (horizontal && vertical ? Math.sqrt(2) : 1);
+		playerPosition.x += horizontal * distance;
+		playerPosition.y += vertical * distance;
+	}
+	else if (playerTarget)
+	{
+		var differenceX = playerTarget.x - playerPosition.x;
+		var differenceY = playerTarget.y - playerPosition.y;
+		horizontal = differenceX;
+		vertical = differenceY;
+		var followAmount = 1 - Math.exp(-delta * 12);
+		playerPosition.x += differenceX * followAmount;
+		playerPosition.y += differenceY * followAmount;
+		if (Math.abs(differenceX) < 1 && Math.abs(differenceY) < 1)
+		{
+			playerPosition.x = playerTarget.x;
+			playerPosition.y = playerTarget.y;
+			playerTarget = null;
+		}
+	}
+
+	renderPlayerPosition();
+	if (horizontal || vertical)
+	{
+		setPlayerAnimation(horizontal, vertical);
+	}
+	else
+	{
+		$("#Player").css({animationName: "", webkitAnimationName: ""});
+	}
+
+	if (playerTarget || playerKeys.ArrowLeft || playerKeys.ArrowRight || playerKeys.ArrowUp || playerKeys.ArrowDown)
+	{
+		playerFrame = window.requestAnimationFrame(movePlayer);
+	}
+	else
+	{
+		playerFrame = null;
+		previousPlayerFrame = 0;
+	}
+}
+
+function startPlayerMovement()
+{
+	if (playerFrame === null)
+	{
+		playerFrame = window.requestAnimationFrame(movePlayer);
+	}
+}
+
+function getPlayerArrowKey(event)
+{
+	var key = event.key;
+	if (/^Arrow(Left|Right|Up|Down)$/.test(key))
+	{
+		return key;
+	}
+
+	return {
+		37: "ArrowLeft",
+		38: "ArrowUp",
+		39: "ArrowRight",
+		40: "ArrowDown"
+	}[event.which || event.keyCode] || "";
+}
+
+function activatePlayerControls()
+{
+	var playerBounds = document.getElementById("Player").getBoundingClientRect();
+	playerPosition.x = playerBounds.left;
+	playerPosition.y = playerBounds.top;
+
+	$(document).keydown(function(event)
+	{
+		var key = getPlayerArrowKey(event);
+		if (key)
+		{
+			event.preventDefault();
+			playerControlled = true;
+			playerTarget = null;
+			if (!playerKeys[key])
+			{
+				var horizontal = key === "ArrowRight" ? 1 : key === "ArrowLeft" ? -1 : 0;
+				var vertical = key === "ArrowDown" ? 1 : key === "ArrowUp" ? -1 : 0;
+				playerPosition.x += horizontal * 14;
+				playerPosition.y += vertical * 14;
+				renderPlayerPosition();
+				setPlayerAnimation(horizontal, vertical);
+			}
+			playerKeys[key] = true;
+			startPlayerMovement();
+		}
+	});
+
+	$(document).keyup(function(event)
+	{
+		var key = getPlayerArrowKey(event);
+		if (playerKeys[key])
+		{
+			playerKeys[key] = false;
+		}
+	});
+
+	$(window).blur(function()
+	{
+		playerKeys = {};
+		playerTarget = null;
+		if (playerFrame !== null)
+		{
+			window.cancelAnimationFrame(playerFrame);
+			playerFrame = null;
+			previousPlayerFrame = 0;
+			$("#Player").css({animationName: "", webkitAnimationName: ""});
+		}
+	});
+
+	$(document).mousemove(function(event)
+	{
+		playerControlled = true;
+		playerTarget = {
+			x: Math.max(0, Math.min($(window).width() - $("#Player").outerWidth(),
+				event.clientX - $("#Player").outerWidth() / 2)),
+			y: Math.max(0, Math.min($(window).height() - $("#Player").outerHeight(),
+				event.clientY - $("#Player").outerHeight() / 2))
+		};
+		startPlayerMovement();
+	});
+}
+
 layoutVerticalScene();
+activatePlayerControls();
 
 $(window).resize(function()
 {
 	var progress = getScrollDistance() - $(window).scrollTop();
 	layoutVerticalScene();
 	window.scrollTo(0, Math.max(0, getScrollDistance() - progress));
+	clampPlayerPosition();
 	updateVerticalPlayer();
 });
 </script >
