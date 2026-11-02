@@ -13,14 +13,20 @@
 /* 設定body */
 body {
 	/*
-	overflow-Y右邊垂直捲軸 設為hidden隱藏
+	overflow-X隱藏橫向捲軸，垂直捲軸用來控制場景
 	background-color背景底色 設為#000黑色
 	font-family網頁字型 設為Microsoft JhengHei, Arial 微軟正黑體,Arial
 	*/	
-	overflow-Y:hidden;
+	overflow-x:hidden;
+	overflow-y:auto;
     background-color: #000;
     text-align: center;    
     font-family: Microsoft JhengHei, Arial;    
+}
+
+/* 場景沿垂直方向排列，從底部向上瀏覽 */
+#scrollTrack {
+	height:502vw;
 }
 
 /* 設定內容顯示區域 */
@@ -32,11 +38,264 @@ body {
 	padding展開設定為0
 	white-space段落文本 設為nowrap 不斷行	
 	*/
+	position:fixed;
+	top:0;
+	left:0;
+	width:100vw;
+	height:100vh;
     min-height: 100%;	
 	list-style: none;     
     margin: 0;
     padding: 0; 
     white-space: nowrap; 
+}
+
+body.vertical-layout #content {
+    position:absolute;
+    overflow:hidden;
+}
+
+body.vertical-layout #Bg {
+    background-color:#f6c6d0;
+    background-image:linear-gradient(180deg, #9bd8f3 0%, #d7eff4 22%, #f5c2ce 48%, #f7cad0 78%, #a9dcec 100%);
+}
+
+body.vertical-layout #content::before,
+body.vertical-layout #content::after {
+    content:"";
+    position:absolute;
+    top:0;
+    width:clamp(48px, 9vw, 112px);
+    height:100%;
+    background:url(image/Cloud.png) center top / 100% auto repeat-y;
+    opacity:.52;
+    pointer-events:none;
+    z-index:5;
+}
+
+body.vertical-layout #content::before {
+    left:0;
+    width:clamp(24px, 4vw, 48px);
+    opacity:.2;
+}
+
+body.vertical-layout #content::after {
+    right:0;
+}
+
+body.vertical-layout #Bg {
+    width:100%;
+    background-size:100% 100%;
+}
+
+body.vertical-layout #RainBow {
+    display:none;
+}
+
+body.vertical-layout #Floor1 {
+    width:100%;
+    height:42px;
+    background-repeat:repeat-x;
+    background-size:auto 100%;
+}
+
+body.vertical-layout #Floor2 {
+    width:100%;
+    height:112px;
+    background-repeat:repeat-x;
+    background-size:auto 100%;
+}
+
+body.vertical-layout #Grass1,
+body.vertical-layout #Grass2 {
+    width:100%;
+    height:72px;
+    background-repeat:repeat-x;
+    background-size:auto 100%;
+}
+
+body.vertical-layout #Fences1,
+body.vertical-layout #Fences2,
+body.vertical-layout #Grass1,
+body.vertical-layout #Grass2,
+body.vertical-layout #Bat4,
+body.vertical-layout #Bat5,
+body.vertical-layout #Bat6,
+body.vertical-layout #Bat7,
+body.vertical-layout #Bat8,
+body.vertical-layout #Bat9,
+body.vertical-layout #Bat10,
+body.vertical-layout #FlyPig4,
+body.vertical-layout #FlyPig5,
+body.vertical-layout #FlyPig6,
+body.vertical-layout #FlyPig7,
+body.vertical-layout #Pumpkin2 {
+    display:none;
+}
+
+body.vertical-layout #Cave {
+    width:clamp(180px, 24vw, 300px);
+    height:clamp(240px, 32vw, 400px);
+    background-size:contain;
+    background-position:center;
+    z-index:1;
+}
+
+body.vertical-layout #Player,
+body.vertical-layout #Pig {
+    position:absolute;
+}
+
+body.vertical-layout #Pig {
+    width:clamp(220px, 32vw, 340px);
+    height:clamp(180px, 27vw, 280px);
+    background-size:contain;
+}
+
+body.vertical-layout #Dinosaur {
+    width:clamp(260px, 48vw, 560px);
+    height:clamp(220px, 42vw, 480px);
+    background-size:contain;
+}
+
+body.vertical-layout #Giraffe {
+    width:clamp(240px, 38vw, 440px);
+    height:clamp(280px, 46vw, 520px);
+    background-size:contain;
+}
+
+body.vertical-layout .Cloud {
+    width:min(76vw, 380px);
+    height:auto;
+    aspect-ratio:1.9;
+    z-index:6;
+    filter:drop-shadow(0 8px 12px rgba(89, 113, 130, .14));
+}
+
+body.vertical-layout .title {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+    line-height:1.15;
+    font-size:clamp(1.7rem, 5.4vw, 3rem);
+    text-align:center;
+    white-space:normal;
+}
+
+body.vertical-layout #content1,
+body.vertical-layout #content2,
+body.vertical-layout #content3 {
+    z-index:3;
+    font-size:clamp(1.5rem, 4vw, 2.5rem);
+    text-shadow:0 2px 0 rgba(255,255,255,.55);
+}
+
+body.vertical-layout #content4 {
+    box-sizing:border-box;
+    display:block;
+    width:min(90vw, 520px);
+    white-space:normal;
+    padding:12px 20px;
+    border-radius:999px;
+    background:rgba(255,255,255,.62);
+    color:#526678 !important;
+    font-size:clamp(1rem, 2.4vw, 1.4rem);
+    line-height:1.4;
+    z-index:4;
+    animation:none;
+    opacity:1;
+}
+
+body.vertical-layout #Player {
+    z-index:4;
+    margin:0;
+}
+
+body.vertical-layout #Pig {
+    margin:0;
+}
+
+body.vertical-layout #Dinosaur,
+body.vertical-layout #Giraffe,
+body.vertical-layout #Pumpkin1,
+body.vertical-layout #Pumpkin2 {
+    z-index:1;
+}
+
+body.vertical-layout .Bat1,
+body.vertical-layout .Bat2,
+body.vertical-layout .Bat3 {
+    width:clamp(64px, 8vw, 100px);
+    height:clamp(64px, 8vw, 100px);
+    margin:0;
+    background-size:contain;
+}
+
+body.vertical-layout #Pumpkin1,
+body.vertical-layout #Pumpkin2 {
+    width:clamp(120px, 16vw, 190px);
+    height:clamp(150px, 20vw, 230px);
+    background-size:contain;
+}
+
+body.vertical-layout .bg {
+    max-width:32vw;
+    height:auto;
+}
+
+body.vertical-layout #FlyPig1,
+body.vertical-layout #FlyPig2,
+body.vertical-layout #FlyPig3 {
+    width:clamp(130px, 18vw, 220px);
+    height:clamp(152px, 21vw, 260px);
+    background-size:contain;
+}
+
+body.vertical-layout #FlyPigText {
+    top:100%;
+    left:0;
+    width:100%;
+    padding:6px 12px;
+    transform:translateY(8px);
+    border-radius:999px;
+    background:rgba(255,255,255,.82);
+    box-shadow:0 3px 8px rgba(90, 112, 132, .14);
+    text-align:center;
+    font-size:clamp(1rem, 2.6vw, 1.8rem);
+}
+
+body.vertical-layout #FlyPig4,
+body.vertical-layout #FlyPig5,
+body.vertical-layout #FlyPig6,
+body.vertical-layout #FlyPig7 {
+    width:clamp(100px, 22vw, 220px);
+    height:clamp(130px, 28vw, 280px);
+    background-size:contain;
+}
+
+body.vertical-layout #Balloon1,
+body.vertical-layout #Balloon2,
+body.vertical-layout #Balloon3 {
+    width:clamp(70px, 12vw, 120px);
+    height:clamp(220px, 33vw, 350px);
+    background-size:contain;
+}
+
+body.vertical-layout #BalloonText {
+    top:36%;
+    left:0;
+    width:100%;
+    text-align:center;
+    font-size:clamp(.9rem, 2vw, 1.4rem);
+}
+
+body.vertical-layout #Bird {
+    width:clamp(120px, 22vw, 210px);
+    height:auto;
+    aspect-ratio:1.2;
+    background-size:contain;
 }
 
 /* 設定超連結 */
@@ -148,21 +407,15 @@ a {
       0% {			
 			background: url(image/Pig1.png);
 			background-size:100%;
-			width:471px;
-			height:386px;	
 		 }
      50% {
 			background: url(image/Pig2.png);
 			background-size:100%;
-			width:471px;
-			height:386px;
-		 }
+      }
     
 	100% {			
 			background: url(image/Pig1.png);
 			background-size:100%;
-			width:471px;
-			height:386px;
 		 }
 }
 

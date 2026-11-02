@@ -9,7 +9,8 @@
 <link href="style.css" rel="stylesheet"  >
 </head>
 
-<body onmousewheel="return false;">
+<body>
+<div id="scrollTrack" aria-hidden="true"></div>
 <!-- 內容 -->
 <div id="content">
 
@@ -65,7 +66,7 @@
 		<!-- 上層 -->
 		<!-- 內容4(操作提示) -->
 		<font size="5" color="#666666" id="content4">
-		請按鍵盤←或→鍵或拉動水平捲軸，慢慢控制人物移動速度
+		請向上捲動頁面，從最底部開始往上瀏覽
 		</font>
 		
 		<!-- 洞窟 -->
@@ -198,53 +199,145 @@
 <script type="text/javascript" src="js/jquery-1.4.3.min.js"></script>
 
 <script type="text/javascript">
-//設定視差滾動速度差
-
-var strength1 = 50;
-var strength2 = 200;
-var strength3 = 500;
-
 //取得視窗寬度跟高度
 var ScreenWidth = $(window).width();
 var ScreenHeight = $(window).height();
 
-//取得視窗長寬比
-var Screen = ScreenWidth / ScreenHeight;
-
-//水平軸
+//由頁面底部往上瀏覽時的場景進度
 var currentScroll;
+var sceneLength = ScreenWidth * 5.02;
+var sceneElements = [];
 
-//當捲軸滾動時
-$(window).scroll(function()
-{  	
-	//取得水平軸位置
-    currentScroll = $(this).scrollLeft();
-	
-	//橫向視差滾動 
-	//當前水平軸位置 - (當前視窗寬度 / 2) = 背景滾動值
-    var pageX = currentScroll - ($(window).width() / 2); 
-	
-	//1 * 背景滾動值 * 1(1由前向後,-1由後向前) = 滾動方向	
-    var newvalueX = 1* pageX * 1;	
-	
-	//設定該標籤的CSS background-position 背景位置值 來移動背景產生視差滾動的效果
-    $('.bg').css("background-position", (strength1 / $(window).width() * newvalueX * -1)+"px "+"0px");
-	
-	$('#RainBow').css("background-repeat","no-repeat");
-	$('#RainBow').css("background-position", (strength1 / $(window).width() * newvalueX * -1)+"px "+"0px");		
-    $('#Grass1').css("background-position", (strength2 / $(window).width() * newvalueX * -1)+"px "+"0px");
-	$('#Grass2').css("background-position", (strength2 / $(window).width() * newvalueX * -1)+"px "+"0px");	
-    $('#Floor2').css("background-position", (strength3 / $(window).width() * newvalueX * -1)+"px "+"0px");
-	
-	//當長寬比是寬螢幕1.7比時
-	if(Screen > 1.7)
+function getScrollDistance()
+{
+	var documentHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+	return Math.max(0, documentHeight - $(window).height());
+}
+
+function layoutVerticalScene()
+{
+	$("body").addClass("vertical-layout");
+	var width = $(window).width();
+	var height = $(window).height();
+	sceneLength = Math.max(width * 5.02, height * 5.8);
+	var sceneScale = sceneLength / 5.02;
+
+	if (sceneElements.length === 0)
 	{
-		//調整背景寬度
-		$('#bg').css("width", "506%");
-		$('#Floor2').css("width", "506%");
-		$('#Grass1').css("width", "502%");
-		$('#Grass2').css("width", "502%");
-	}	
+		$("#content").find("*").each(function()
+		{
+			var element = this;
+			var style = window.getComputedStyle(element);
+			var isSceneElement = style.position === "fixed" ||
+				(style.position === "absolute" && element.offsetParent === document.getElementById("content"));
+
+			if (isSceneElement)
+			{
+				sceneElements.push({
+					element: element,
+					progress: parseFloat(style.left) / width,
+					crossAxis: parseFloat(style.top) / height
+				});
+			}
+		});
+	}
+
+	$("#content, #scrollTrack").css("height", sceneLength + "px");
+	$("#content").css("min-height", sceneLength + "px");
+
+	sceneElements.forEach(function(item)
+	{
+		var id = item.element.id;
+		var top = sceneLength - item.progress * sceneScale - item.element.offsetHeight;
+		var left = item.crossAxis * width;
+
+		if (id.indexOf("Cloud") === 0 && !/^bg_Cloud/.test(id))
+		{
+			left = (width - item.element.offsetWidth) / 2;
+			if (id === "Cloud1")
+			{
+				top -= 180;
+			}
+		}
+		else if (/^bg_Cloud/.test(id))
+		{
+			var cloudNumber = parseInt(id.replace("bg_Cloud", ""), 10);
+			left = cloudNumber % 2 === 0
+				? width - item.element.offsetWidth - width * 0.04
+				: width * 0.04;
+		}
+		else if (/^content[123]$/.test(id))
+		{
+			var skillNumber = parseInt(id.replace("content", ""), 10);
+			left = (width - item.element.offsetWidth) / 2;
+			top += 235 + (skillNumber - 1) * 70;
+		}
+		else if (id === "Player")
+		{
+			left = width * 0.16;
+			top = sceneLength - height * 0.9;
+		}
+		else if (id === "Pig")
+		{
+			left = width * 0.56;
+		}
+		else if (/^FlyPig[1-7]$/.test(id))
+		{
+			left = id === "FlyPig1" || id === "FlyPig3" || id === "FlyPig5" || id === "FlyPig7"
+				? width * 0.06
+				: width - item.element.offsetWidth - 24;
+			if (/^FlyPig[1-3]$/.test(id))
+			{
+				top += 260;
+			}
+		}
+		else if (id === "Cave")
+		{
+			left = width * 0.58;
+			top += 500;
+		}
+		else if (/^Bat/.test(id))
+		{
+			var batNumber = parseInt(id.replace("Bat", ""), 10);
+			top += (batNumber % 4) * 90;
+		}
+		else if (id === "Pumpkin1")
+		{
+			left = width * 0.76;
+		}
+		else if (id === "Pumpkin2")
+		{
+			left = width * 0.12;
+		}
+		else if (id === "content4")
+		{
+			left = (width - item.element.offsetWidth) / 2;
+			top = sceneLength - 0.05 * sceneScale - 70;
+		}
+
+		item.element.style.position = "absolute";
+		item.element.style.left = left + "px";
+		item.element.style.top = top + "px";
+		item.element.style.right = "auto";
+		item.element.style.bottom = "auto";
+	});
+
+	$("#Bg").css({left: 0, top: 0});
+	$("#RainBow").css({left: 0, top: (sceneLength * 0.46) + "px"});
+	$("#Floor1").css({left: 0, top: (sceneLength - 42) + "px"});
+	$("#Floor2").css({left: 0, top: (sceneLength - 112) + "px"});
+	$("#Grass1, #Grass2").css({left: 0, top: (sceneLength - 155) + "px"});
+	$("#Fences1, #Fences2").css({left: 0, top: (sceneLength - 220) + "px"});
+	$("#Cloud5").css("top", "48px");
+}
+
+layoutVerticalScene();
+
+$(window).resize(function()
+{
+	var progress = getScrollDistance() - $(window).scrollTop();
+	layoutVerticalScene();
+	window.scrollTo(0, Math.max(0, getScrollDistance() - progress));
 });
 </script >
 
@@ -264,13 +357,10 @@ var ActionPoint4 = ScreenWidth / 0.25;
 //當前視窗寬度 / 0.19 = 第五個觸發點
 var ActionPoint5 = ScreenWidth / 0.19;
 
-//當前視窗高度 / 2.50 = 跳躍起跳最高點高度
-var JumpUp = ScreenHeight / 2.50;
+//角色跳躍時的水平位移
+var JumpUp = ScreenWidth / 2.50;
 
-//當前視窗高度 / 1.25 = 跳躍降落最低點高度
-var JumpDown = ScreenHeight / 1.25;	
-
-//舊水平捲軸位置
+//舊瀏覽進度
 var previousScroll  = 0;
 
 //時間計時
@@ -278,6 +368,7 @@ var timer;
 
 //豬跳躍狀態
 var PigJump = 0;
+var BatsReleased = false;
 
 //當捲軸滾動時
 $(window).scroll(function(){  
@@ -301,30 +392,27 @@ $(window).scroll(function(){
 	//當前視窗寬度 / 0.19 = 第五個觸發點
 	ActionPoint5 = ScreenWidth / 0.19;
 	
-	//當前視窗高度 / 1.25 = 跳躍起跳最高點高度
-	JumpUp = ScreenHeight / 3.31;
+	//依視窗寬度調整角色跳躍距離
+	JumpUp = ScreenWidth / 3.31;
 	
-	//當前視窗高度 / 1.25 = 跳躍降落最低點高度
-	JumpDown = 0;
-	
-	//取得水平軸位置
-	currentScroll = $(this).scrollLeft();
+	//依底部起算的垂直捲動距離換算場景瀏覽進度
+	currentScroll = getScrollDistance() - $(this).scrollTop();
 	
 	//豬播放走路動畫
 	$("#Pig").css('webkitAnimationName', 'PigWalk');
 	
-	//判斷水平軸向右捲動
+	//往上瀏覽時角色播放移動動畫
 	if(currentScroll > previousScroll)
 	{		
-		//人物向右走
-		$("#Player").css('webkitAnimationName', 'RWalk');	
+		//人物沿場景前進
+		$("#Player").css('webkitAnimationName', 'RWalk');
 		
 		//只要每過完250毫秒就執行funtion idel
 		clearTimeout(timer);		
 		timer = setTimeout(idel , 250); 					
 	}
 	
-	//判斷水平軸向左捲動
+	//往下瀏覽時場景向右移動
 	else if(currentScroll < previousScroll)
 	{
 		//人物向右走
@@ -335,69 +423,70 @@ $(window).scroll(function(){
 		timer = setTimeout(idel , 250); 		
 	}
 	
-	//當水平軸捲動到第一個觸發點
+	//瀏覽進度到達第一個觸發點
 	if(currentScroll > ActionPoint1)
 	{					
 		//判斷豬是否跳躍過第一次
 		if(PigJump == 0)
 		{			
 			//隊列動畫實現跳躍一次
-			$("#Pig").animate({bottom:"250px"});
-			$("#Pig").animate({bottom:"0px"});
+			$("#Pig").animate({left:"+=250px"});
+			$("#Pig").animate({left:"-=250px"});
 			PigJump = 1;
 		}		
 	}
 	
-	//當水平軸還沒捲動到第一個觸發點
+	//瀏覽進度尚未到達第一個觸發點
 	else if(currentScroll < ActionPoint1)
 	{
 		//把豬的跳躍狀態恢復為0
 		PigJump = 0;
 	}
 	
-	//當水平軸捲動到第二個觸發點
-	if(currentScroll >= ActionPoint2)
+	//瀏覽進度到達第二個觸發點
+	if(currentScroll >= ActionPoint2 && !BatsReleased)
 	{				
-		//同時飛出蝙蝠
-		$("#Bat1").animate({top:"40%",left:"140%"}, 3500);
-		$("#Bat2").animate({top:"40%",left:"155%"}, 3500);
-		$("#Bat3").animate({top:"40%",left:"170%"}, 4000);
-		$("#Bat4").animate({top:"40%",left:"185%"}, 5000);
-		$("#Bat5").animate({top:"57%",left:"140%"}, 3500);
-		$("#Bat6").animate({top:"57%",left:"155%"}, 4000);
-		$("#Bat7").animate({top:"57%",left:"170%"}, 5000);
-		$("#Bat8").animate({top:"75%",left:"140%"}, 3500);
-		$("#Bat9").animate({top:"75%",left:"155%"}, 4000);
-		$("#Bat10").animate({top:"75%",left:"170%"}, 5000);		
+		//蝙蝠沿場景橫向飛出
+		$("#Bat1").animate({left:"15%"}, 3500);
+		$("#Bat2").animate({left:"25%"}, 3500);
+		$("#Bat3").animate({left:"35%"}, 4000);
+		$("#Bat4").animate({left:"45%"}, 5000);
+		$("#Bat5").animate({left:"55%"}, 3500);
+		$("#Bat6").animate({left:"65%"}, 4000);
+		$("#Bat7").animate({left:"75%"}, 5000);
+		$("#Bat8").animate({left:"25%"}, 3500);
+		$("#Bat9").animate({left:"45%"}, 4000);
+		$("#Bat10").animate({left:"65%"}, 5000);
+		BatsReleased = true;
 	}
 	
-	//當水平軸捲動到第三個觸發點
+	//瀏覽進度到達第三個觸發點
 	if(currentScroll > ActionPoint3)
 	{		
 		//判斷豬是否跳躍過第二次
 		if(PigJump == 1)
 		{			
 			//隊列動畫實現跳躍一次
-			$("#Pig").animate({bottom:JumpUp});
-			$("#Pig").animate({bottom:JumpDown});
+			$("#Pig").animate({left:"+=" + JumpUp});
+			$("#Pig").animate({left:"-=" + JumpUp});
 			PigJump = 2;
 		}		
 	}
 	
-	//當水平軸還沒捲動到第三個觸發點，而且水平軸已經捲動過第一個觸發點
+	//瀏覽進度尚未到達第三個觸發點，但已超過第一個觸發點
 	else if(currentScroll < ActionPoint3 && currentScroll > ActionPoint1)
 	{
 		//把豬的跳躍狀態恢復為1
 		PigJump = 1;
 	}
 	
-	//當水平軸已經捲動過第四個觸發點，而且水平軸還沒捲動超過第五個觸發點
+	//瀏覽進度已超過第四個觸發點，但尚未超過第五個觸發點
 	if (currentScroll > ActionPoint4 && currentScroll < ActionPoint5)
 	{
 		$("#Speak").animate({height:"150px"}, 2000);
 	}
 	
-	//遞回現在水平軸捲動位置 給 舊水平軸捲動位置
+	//更新舊瀏覽進度
 	previousScroll = currentScroll;     
 }); 
 
@@ -410,6 +499,20 @@ var idel = function ()
 	//豬動畫取消播放
 	$("#Pig").css('webkitAnimationName', '');	 
 };  
+
+//初始位置放在頁面最底部，讓使用者向上瀏覽整個場景
+if ("scrollRestoration" in window.history)
+{
+	window.history.scrollRestoration = "manual";
+}
+
+function startAtBottom()
+{
+	window.scrollTo(0, getScrollDistance());
+}
+
+startAtBottom();
+$(window).load(startAtBottom);
 </script>
 
 </body>
