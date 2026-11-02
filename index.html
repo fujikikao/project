@@ -329,6 +329,25 @@ function layoutVerticalScene()
 	$("#Grass1, #Grass2").css({left: 0, top: (sceneLength - 155) + "px"});
 	$("#Fences1, #Fences2").css({left: 0, top: (sceneLength - 220) + "px"});
 	$("#Cloud5").css("top", "48px");
+	updateVerticalPlayer();
+}
+
+function updateVerticalPlayer()
+{
+	if (!$("body").hasClass("vertical-layout"))
+	{
+		return;
+	}
+
+	var viewportHeight = $(window).height();
+	var playerHeight = $("#Player").outerHeight();
+	var maxScroll = getScrollDistance();
+	var scrollProgress = maxScroll - $(window).scrollTop();
+	var travelDistance = Math.max(0, viewportHeight - playerHeight - 48);
+	var progressRatio = maxScroll > 0 ? Math.max(0, Math.min(1, scrollProgress / maxScroll)) : 0;
+	var screenTop = viewportHeight - playerHeight - 24 - progressRatio * travelDistance;
+
+	$("#Player").css("top", ($(window).scrollTop() + screenTop) + "px");
 }
 
 layoutVerticalScene();
@@ -338,6 +357,7 @@ $(window).resize(function()
 	var progress = getScrollDistance() - $(window).scrollTop();
 	layoutVerticalScene();
 	window.scrollTo(0, Math.max(0, getScrollDistance() - progress));
+	updateVerticalPlayer();
 });
 </script >
 
@@ -397,6 +417,9 @@ $(window).scroll(function(){
 	
 	//依底部起算的垂直捲動距離換算場景瀏覽進度
 	currentScroll = getScrollDistance() - $(this).scrollTop();
+
+	//直式場景中，角色隨捲動進度從底部往上飛
+	updateVerticalPlayer();
 	
 	//豬播放走路動畫
 	$("#Pig").css('webkitAnimationName', 'PigWalk');
@@ -404,8 +427,9 @@ $(window).scroll(function(){
 	//往上瀏覽時角色播放移動動畫
 	if(currentScroll > previousScroll)
 	{		
-		//人物沿場景前進
-		$("#Player").css('webkitAnimationName', 'RWalk');
+		//直式場景使用飛行影格，橫式場景沿用走路動畫
+		var playerAnimation = $("body").hasClass("vertical-layout") ? "PlayerFly" : "RWalk";
+		$("#Player").css({animationName:playerAnimation, webkitAnimationName:playerAnimation});
 		
 		//只要每過完250毫秒就執行funtion idel
 		clearTimeout(timer);		
@@ -415,8 +439,9 @@ $(window).scroll(function(){
 	//往下瀏覽時場景向右移動
 	else if(currentScroll < previousScroll)
 	{
-		//人物向右走
-		$("#Player").css('webkitAnimationName', 'LWalk');
+		//直式場景的角色隨捲動往返，橫式場景沿用原本動畫
+		var playerAnimation = $("body").hasClass("vertical-layout") ? "PlayerFly" : "LWalk";
+		$("#Player").css({animationName:playerAnimation, webkitAnimationName:playerAnimation});
 			
 		//只要每過完250毫秒就執行funtion idel
 		clearTimeout(timer);		
@@ -494,7 +519,7 @@ $(window).scroll(function(){
 var idel = function () 
 {        	
 	//玩家動畫取消播放
-	$("#Player").css('webkitAnimationName', '');
+	$("#Player").css({animationName:'', webkitAnimationName:''});
 	
 	//豬動畫取消播放
 	$("#Pig").css('webkitAnimationName', '');	 
@@ -509,6 +534,7 @@ if ("scrollRestoration" in window.history)
 function startAtBottom()
 {
 	window.scrollTo(0, getScrollDistance());
+	updateVerticalPlayer();
 }
 
 startAtBottom();

@@ -216,6 +216,32 @@ body.vertical-layout #content4 {
 body.vertical-layout #Player {
     z-index:4;
     margin:0;
+    animation-duration:.55s;
+    animation-iteration-count:infinite;
+}
+
+@keyframes PlayerFly {
+    0%, 100% {
+        background-image:url(image/player_Rwalk1.png);
+        transform:translateY(0);
+    }
+
+    50% {
+        background-image:url(image/player_Rwalk2.png);
+        transform:translateY(-12px);
+    }
+}
+
+@-webkit-keyframes PlayerFly {
+    0%, 100% {
+        background-image:url(image/player_Rwalk1.png);
+        -webkit-transform:translateY(0);
+    }
+
+    50% {
+        background-image:url(image/player_Rwalk2.png);
+        -webkit-transform:translateY(-12px);
+    }
 }
 
 body.vertical-layout #Pig {
