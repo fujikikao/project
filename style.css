@@ -221,34 +221,91 @@ body.vertical-layout #content4 {
 }
 
 body.vertical-layout #Player {
+    width:clamp(48px, 8.5vw, 69.5px);
+    height:auto;
+    aspect-ratio:205 / 343;
     z-index:4;
+    pointer-events:none;
     margin:0;
     animation-duration:.55s;
     animation-iteration-count:infinite;
+    -webkit-animation-duration:.55s;
+    -webkit-animation-iteration-count:infinite;
+}
+
+body.vertical-layout .scene-cat {
+    display:block;
+    position:absolute;
+    width:clamp(28px, 4vw, 56px);
+    height:auto;
+    aspect-ratio:554 / 491;
+    z-index:8;
+    cursor:pointer;
+    touch-action:manipulation;
+    animation:cat-float 7s ease-in-out infinite;
+}
+
+body.vertical-layout .scene-cat:focus-visible {
+    outline:2px solid #f26522;
+    outline-offset:4px;
+    border-radius:50%;
+}
+
+body.vertical-layout .scene-cat-art {
+    display:block;
+    width:100%;
+    height:100%;
+    background-image:url(image/Dinosaur.png);
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:contain;
+    animation:cat-expression 1.2s steps(1, end) infinite;
+}
+
+body.vertical-layout #scene-cat-dinosaur {
+    animation-duration:8.5s;
+    animation-delay:-2s;
+}
+
+body.vertical-layout #scene-cat-dinosaur2 {
+    animation-duration:6.5s;
+    animation-delay:-4s;
+}
+
+body.vertical-layout #scene-cat-pig {
+    animation-duration:9s;
+    animation-delay:-1s;
+}
+
+body.vertical-layout #scene-cat-giraffe {
+    animation-duration:7.5s;
+    animation-delay:-3s;
+}
+
+body.vertical-layout #scene-cat-dinosaur .scene-cat-art,
+body.vertical-layout #scene-cat-pig .scene-cat-art {
+    animation-delay:-.6s;
+}
+
+.dispersed-bat {
+    position:absolute;
+    z-index:9;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:contain;
+    pointer-events:none;
+    transform:translate(-50%, -50%) scale(.35);
+    animation:bat-burst 1.8s ease-out forwards, bat-flap .24s steps(1, end) infinite;
 }
 
 @keyframes PlayerFly {
-    0%, 100% {
-        background-image:url(image/player_Rwalk1.png);
-        transform:translateY(0);
-    }
-
-    50% {
-        background-image:url(image/player_Rwalk2.png);
-        transform:translateY(-12px);
-    }
+    from { background-position:0 0; }
+    to { background-position:100% 0; }
 }
 
 @-webkit-keyframes PlayerFly {
-    0%, 100% {
-        background-image:url(image/player_Rwalk1.png);
-        -webkit-transform:translateY(0);
-    }
-
-    50% {
-        background-image:url(image/player_Rwalk2.png);
-        -webkit-transform:translateY(-12px);
-    }
+    from { background-position:0 0; }
+    to { background-position:100% 0; }
 }
 
 body.vertical-layout #Pig {
@@ -365,58 +422,80 @@ a {
 /* 繪製 主角 */
 #Player{
 	position:fixed;
-	width:139px;
-	height:203px;
-	background: url(image/player_Rwalk1.png);
-	background-size:139px 203px;
+	width:69.5px;
+	height:116px;
+	background-image:url(image/Sprite.png);
+	background-size:800% 100%;
+	background-position:0 0;
 	background-repeat:no-repeat; 
 	left:35%;
 	bottom:0%;/*84%*/
 	z-index:3;
 	margin:-186px 0 0 -168px;	
-    -webkit-animation-iteration-count:infinite;	
-	-webkit-animation-duration:1s;	
-    -webkit-animation-delay:0s; 	
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-duration:1s;
+	-webkit-animation-timing-function:steps(7, end);
+	-webkit-animation-delay:0s;
+	animation-iteration-count:infinite;
+	animation-duration:1s;
+	animation-timing-function:steps(7, end);
 }
 
-/* 動畫 人物右走 */
-@-webkit-keyframes RWalk{
-	/*
-	%數為動畫的時間軸長度百分比
-	*/
-      0% {			
-			background: url(image/player_Rwalk1.png);
-			background-size:139px 203px;
-		 }
-     50% {
-			background: url(image/player_Rwalk2.png);
-			background-size:139px 203px;			
-		 }
-    100% 
-		 {			
-			background: url(image/player_Rwalk1.png);
-			background-size:139px 203px;
-		 }
+@keyframes RWalk {
+	from { background-position:0 0; }
+	to { background-position:100% 0; }
 }
 
-/* 動畫 人物左走 */
-@-webkit-keyframes LWalk{
-	/*
-	%數為動畫的時間軸長度百分比
-	*/
-      0% {			
-			background: url(image/player_Rwalk2.png);	
-			background-size:139px 203px;
-		 }
-     50% {
-			background: url(image/player_Rwalk1.png);
-			background-size:139px 203px;
-		 }
-    100% 
-		 {			
-			background: url(image/player_Rwalk2.png);
-			background-size:139px 203px;
-		 }
+@-webkit-keyframes RWalk {
+	from { background-position:0 0; }
+	to { background-position:100% 0; }
+}
+
+@keyframes LWalk {
+	from { background-position:100% 0; }
+	to { background-position:0 0; }
+}
+
+@-webkit-keyframes LWalk {
+	from { background-position:100% 0; }
+	to { background-position:0 0; }
+}
+
+@keyframes cat-float {
+    0%, 100% { transform:translate(0, 0) rotate(-4deg); }
+    25% { transform:translate(18px, -24px) rotate(3deg); }
+    50% { transform:translate(-12px, -42px) rotate(-2deg); }
+    75% { transform:translate(22px, -12px) rotate(4deg); }
+}
+
+@keyframes cat-expression {
+    0%, 49% { background-image:url(image/Dinosaur.png); }
+    50%, 100% { background-image:url(image/Dinosaur2.png); }
+}
+
+@-webkit-keyframes cat-float {
+    0%, 100% { -webkit-transform:translate(0, 0) rotate(-4deg); }
+    25% { -webkit-transform:translate(18px, -24px) rotate(3deg); }
+    50% { -webkit-transform:translate(-12px, -42px) rotate(-2deg); }
+    75% { -webkit-transform:translate(22px, -12px) rotate(4deg); }
+}
+
+@-webkit-keyframes cat-expression {
+    0%, 49% { background-image:url(image/Dinosaur.png); }
+    50%, 100% { background-image:url(image/Dinosaur2.png); }
+}
+
+@keyframes bat-burst {
+    to {
+        opacity:0;
+        transform:translate(calc(-50% + var(--bat-x)), calc(-50% + var(--bat-y))) scale(.8);
+    }
+}
+
+@keyframes bat-flap {
+    0%, 33% { background-image:url(image/Bat1.png); }
+    34%, 66% { background-image:url(image/Bat2.png); }
+    67%, 100% { background-image:url(image/Bat3.png); }
 }
 
 /* 繪製 豬 */
@@ -433,7 +512,7 @@ a {
 	margin:-186px 0 0 -168px;
 	
     -webkit-animation-iteration-count:infinite;
-	-webkit-animation-duration:1s;
+    -webkit-animation-duration:1s;
     -webkit-animation-delay:0s;    
 }
 

@@ -198,6 +198,13 @@
 		
 		<!-- 小鳥 -->
 		<div id="Bird"></div>
+
+		<!-- 各場景的貓咪連結；data-url 留空時暫不導頁 -->
+		<a id="scene-cat-bird" class="scene-cat" href="#" data-url="" data-background-index="0" data-section-x="0.16" data-section-y="0.52" aria-label="小鳥區的貓咪" target="_blank" rel="noopener noreferrer"><span class="scene-cat-art" aria-hidden="true"></span></a>
+		<a id="scene-cat-dinosaur" class="scene-cat" href="#" data-url="" data-background-index="1" data-section-x="0.72" data-section-y="0.42" aria-label="恐龍區的貓咪" target="_blank" rel="noopener noreferrer"><span class="scene-cat-art" aria-hidden="true"></span></a>
+		<a id="scene-cat-dinosaur2" class="scene-cat" href="#" data-url="" data-background-index="2" data-section-x="0.28" data-section-y="0.58" aria-label="第二恐龍區的貓咪" target="_blank" rel="noopener noreferrer"><span class="scene-cat-art" aria-hidden="true"></span></a>
+		<a id="scene-cat-pig" class="scene-cat" href="#" data-url="" data-background-index="3" data-section-x="0.7" data-section-y="0.46" aria-label="小豬區的貓咪" target="_blank" rel="noopener noreferrer"><span class="scene-cat-art" aria-hidden="true"></span></a>
+		<a id="scene-cat-giraffe" class="scene-cat" href="#" data-url="" data-background-index="4" data-section-x="0.2" data-section-y="0.54" aria-label="長頸鹿區的貓咪" target="_blank" rel="noopener noreferrer"><span class="scene-cat-art" aria-hidden="true"></span></a>
 	</div>
 </div>
 
@@ -296,6 +303,24 @@ function layoutVerticalScene()
 			left = width * 0.16;
 			top = sceneLength - height * 0.9;
 		}
+		else if (/^scene-cat-/.test(id))
+		{
+			var backgroundIndex = parseInt(item.element.getAttribute("data-background-index"), 10);
+			var sectionHeight = width * parseFloat(
+				$("#Bg .scene-background").eq(backgroundIndex).attr("height")) /
+				parseFloat($("#Bg .scene-background").eq(backgroundIndex).attr("width"));
+			var sectionBottom = 0;
+			for (var section = 0; section < backgroundIndex; section++)
+			{
+				var sectionImage = $("#Bg .scene-background").eq(section);
+				sectionBottom += width * parseFloat(sectionImage.attr("height")) /
+					parseFloat(sectionImage.attr("width"));
+			}
+			left = width * parseFloat(item.element.getAttribute("data-section-x"));
+			top = sceneLength - sectionBottom - sectionHeight +
+				sectionHeight * parseFloat(item.element.getAttribute("data-section-y")) -
+				item.element.offsetHeight / 2;
+		}
 		else if (id === "Pig")
 		{
 			left = width * 0.56;
@@ -386,6 +411,71 @@ function updateVerticalPlayer()
 	var screenTop = viewportHeight - playerHeight - 24 - progressRatio * travelDistance;
 
 	$("#Player").css("top", ($(window).scrollTop() + screenTop) + "px");
+	checkPlayerBatCatCollision();
+}
+
+function burstBatsFromCat(cat)
+{
+	var bounds = cat.getBoundingClientRect();
+	var originX = bounds.left + window.scrollX + bounds.width / 2;
+	var originY = bounds.top + window.scrollY + bounds.height / 2;
+	var batCount = 8;
+
+	for (var i = 0; i < batCount; i++)
+	{
+		var angle = Math.random() * Math.PI * 2;
+		var distance = 160 + Math.random() * 280;
+		var bat = document.createElement("span");
+		bat.className = "dispersed-bat";
+		bat.setAttribute("aria-hidden", "true");
+		bat.style.left = originX + "px";
+		bat.style.top = originY + "px";
+		bat.style.width = bounds.width + "px";
+		bat.style.height = bounds.height + "px";
+		bat.style.setProperty("--bat-x", Math.cos(angle) * distance + "px");
+		bat.style.setProperty("--bat-y", Math.sin(angle) * distance + "px");
+		bat.style.backgroundImage = "url(image/Bat" + (1 + Math.floor(Math.random() * 3)) + ".png)";
+		bat.addEventListener("animationend", function(event)
+		{
+			if (event.animationName === "bat-burst")
+			{
+				this.remove();
+			}
+		});
+		document.getElementById("content").appendChild(bat);
+	}
+}
+
+function checkPlayerBatCatCollision()
+{
+	var player = document.getElementById("Player");
+	var cats = document.querySelectorAll(".scene-cat");
+	if (!player || cats.length === 0)
+	{
+		return;
+	}
+
+	var playerBounds = player.getBoundingClientRect();
+	var padding = 18;
+	for (var i = 0; i < cats.length; i++)
+	{
+		var cat = cats[i];
+		var catBounds = cat.getBoundingClientRect();
+		var isNearCat = playerBounds.left < catBounds.right + padding &&
+			playerBounds.right > catBounds.left - padding &&
+			playerBounds.top < catBounds.bottom + padding &&
+			playerBounds.bottom > catBounds.top - padding;
+
+		if (isNearCat && cat.getAttribute("data-triggered") !== "true")
+		{
+			cat.setAttribute("data-triggered", "true");
+			burstBatsFromCat(cat);
+		}
+		else if (!isNearCat)
+		{
+			cat.removeAttribute("data-triggered");
+		}
+	}
 }
 
 function clampPlayerPosition()
@@ -403,6 +493,7 @@ function renderPlayerPosition()
 		left: playerPosition.x + "px",
 		top: ($(window).scrollTop() + playerPosition.y) + "px"
 	});
+	checkPlayerBatCatCollision();
 }
 
 function setPlayerAnimation(horizontal, vertical)
@@ -552,6 +643,18 @@ function activatePlayerControls()
 		startPlayerMovement();
 	});
 }
+
+$(".scene-cat").click(function(event)
+{
+	var destination = this.getAttribute("data-url");
+	if (destination)
+	{
+		this.href = destination;
+		return;
+	}
+
+	event.preventDefault();
+});
 
 layoutVerticalScene();
 activatePlayerControls();
