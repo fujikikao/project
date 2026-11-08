@@ -18,7 +18,13 @@
 	<div id="Floor">	
 		<!-- 底層 -->
 		<!-- 背景 -->
-		<div id="Bg"></div>
+		<div id="Bg">
+			<img class="scene-background" src="image/bg1.jpg" width="2438" height="5152" alt="" />
+			<img class="scene-background" src="image/bg2.jpg" width="1000" height="2138" alt="" />
+			<img class="scene-background" src="image/bg3.jpg" width="2799" height="5496" alt="" />
+			<img class="scene-background" src="image/bg4.jpg" width="2964" height="5655" alt="" />
+			<img class="scene-background" src="image/bg5.jpg" width="1536" height="2752" alt="" />
+		</div>
 		<div id="RainBow"></div>
 		
 		<!-- 恐龍 -->
@@ -226,7 +232,13 @@ function layoutVerticalScene()
 	$("body").addClass("vertical-layout");
 	var width = $(window).width();
 	var height = $(window).height();
-	sceneLength = Math.max(width * 5.02, height * 5.8);
+	var backgroundHeight = 0;
+	$("#Bg .scene-background").each(function()
+	{
+		backgroundHeight += width * parseFloat(this.getAttribute("height")) /
+			parseFloat(this.getAttribute("width"));
+	});
+	sceneLength = Math.max(width * 5.02, backgroundHeight);
 	var sceneScale = sceneLength / 5.02;
 
 	if (sceneElements.length === 0)
@@ -329,7 +341,20 @@ function layoutVerticalScene()
 		item.element.style.bottom = "auto";
 	});
 
-	$("#Bg").css({left: 0, top: 0});
+	var backgroundBottom = sceneLength;
+	$("#Bg .scene-background").each(function()
+	{
+		var imageHeight = width * parseFloat(this.getAttribute("height")) /
+			parseFloat(this.getAttribute("width"));
+		backgroundBottom -= imageHeight;
+		$(this).css({
+			left: 0,
+			top: backgroundBottom + "px",
+			width: width + "px",
+			height: imageHeight + "px"
+		});
+	});
+	$("#Bg").css({left: 0, top: 0, width: width + "px", height: sceneLength + "px"});
 	$("#RainBow").css({left: 0, top: (sceneLength * 0.46) + "px"});
 	$("#Floor1").css({left: 0, top: (sceneLength - 42) + "px"});
 	$("#Floor2").css({left: 0, top: (sceneLength - 112) + "px"});

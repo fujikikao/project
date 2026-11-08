@@ -93,6 +93,13 @@ body.vertical-layout #Bg {
     background-size:100% 100%;
 }
 
+body.vertical-layout #Bg .scene-background {
+    display:block;
+    position:absolute;
+    max-width:none;
+    pointer-events:none;
+}
+
 body.vertical-layout #RainBow {
     display:none;
 }
