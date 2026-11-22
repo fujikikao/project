@@ -247,6 +247,16 @@ function layoutVerticalScene()
 	});
 	sceneLength = Math.max(width * 5.02, backgroundHeight);
 	var sceneScale = sceneLength / 5.02;
+	var backgroundHeights = [];
+	$("#Bg .scene-background").each(function()
+	{
+		backgroundHeights.push(width * parseFloat(this.getAttribute("height")) /
+			parseFloat(this.getAttribute("width")));
+	});
+	var secondLayerTop = sceneLength - backgroundHeights[0] - backgroundHeights[1];
+	var secondLayerHeight = backgroundHeights[1];
+	var thirdLayerTop = secondLayerTop - backgroundHeights[2];
+	var fourthLayerTop = thirdLayerTop - backgroundHeights[3];
 
 	if (sceneElements.length === 0)
 	{
@@ -277,7 +287,22 @@ function layoutVerticalScene()
 		var top = sceneLength - item.progress * sceneScale - item.element.offsetHeight;
 		var left = item.crossAxis * width;
 
-		if (id.indexOf("Cloud") === 0 && !/^bg_Cloud/.test(id))
+		if (id === "Cloud2")
+		{
+			left = width * 0.1;
+			top = secondLayerTop + secondLayerHeight * 0.11;
+		}
+		else if (id === "Cloud3")
+		{
+			left = (width - item.element.offsetWidth) / 2;
+			top = thirdLayerTop + backgroundHeights[2] * 0.11;
+		}
+		else if (id === "Cloud4")
+		{
+			left = (width - item.element.offsetWidth) / 2;
+			top = fourthLayerTop + backgroundHeights[3] * 0.11;
+		}
+		else if (id.indexOf("Cloud") === 0 && !/^bg_Cloud/.test(id))
 		{
 			left = (width - item.element.offsetWidth) / 2;
 			if (id === "Cloud1")
@@ -295,8 +320,13 @@ function layoutVerticalScene()
 		else if (/^content[123]$/.test(id))
 		{
 			var skillNumber = parseInt(id.replace("content", ""), 10);
-			left = (width - item.element.offsetWidth) / 2;
-			top += 235 + (skillNumber - 1) * 70;
+			var skillOffsets = width < 740
+				? [0.34, 0.43, 0.52]
+				: [0.19, 0.25, 0.31];
+			left = width < 740
+				? (width - item.element.offsetWidth) / 2
+				: width * 0.62;
+			top = secondLayerTop + secondLayerHeight * skillOffsets[skillNumber - 1];
 		}
 		else if (id === "Player")
 		{
@@ -325,15 +355,23 @@ function layoutVerticalScene()
 		{
 			left = width * 0.56;
 		}
-		else if (/^FlyPig[1-7]$/.test(id))
+		else if (/^FlyPig[1-3]$/.test(id))
 		{
-			left = id === "FlyPig1" || id === "FlyPig3" || id === "FlyPig5" || id === "FlyPig7"
+			var designNumber = parseInt(id.replace("FlyPig", ""), 10);
+			var designLayerPositions = [0.14, 0.43, 0.72];
+			var designLayerLefts = [
+				width * 0.06,
+				width - item.element.offsetWidth - 24,
+				(width - item.element.offsetWidth) / 2
+			];
+			left = designLayerLefts[designNumber - 1];
+			top = thirdLayerTop + backgroundHeights[2] * designLayerPositions[designNumber - 1];
+		}
+		else if (/^FlyPig[4-7]$/.test(id))
+		{
+			left = id === "FlyPig5" || id === "FlyPig7"
 				? width * 0.06
 				: width - item.element.offsetWidth - 24;
-			if (/^FlyPig[1-3]$/.test(id))
-			{
-				top += 260;
-			}
 		}
 		else if (id === "Cave")
 		{

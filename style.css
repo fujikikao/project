@@ -196,6 +196,14 @@ body.vertical-layout .title {
     white-space:normal;
 }
 
+body.vertical-layout #Cloud2 .title,
+body.vertical-layout #content1,
+body.vertical-layout #content2,
+body.vertical-layout #content3 {
+    font-family:"Kaiti TC", "BiauKai", "DFKai-SB", "STKaiti", "KaiTi", serif;
+    font-weight:500;
+}
+
 body.vertical-layout #content1,
 body.vertical-layout #content2,
 body.vertical-layout #content3 {
