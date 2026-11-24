@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>筆觸的溫度與數位的共振 | 科技藝術與慢感知互動計畫</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tone.js for Generative Music & Graphite Friction Synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <!-- Google Fonts: Noto Serif TC (人文書寫感) & Noto Sans TC & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        ink: {
+                            950: '#0b0c0e',
+                            900: '#121417',
+                            800: '#1c1f24',
+                            700: '#2a2f36',
+                        },
+                        washi: {
+                            50: '#faf8f5',
+                            100: '#f3efe6',
+                            200: '#e6dfd1',
+                        },
+                        moss: '#6b9080',
+                        amberWarm: '#d4a373',
+                        resonance: '#72a8d8',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 自訂紙張微粒質感與卷軸樣式 */
+        body {
+            background-color: #0b0c0e;
+            color: #e6e2d8;
+            overflow-x: hidden;
+        }
+
+        /* 模擬實體紙張纖維紋理 (用於投影疊加模式) */
+        .paper-texture-light {
+            background-color: #f6f2e9;
+            background-image: 
+                radial-gradient(rgba(160, 145, 120, 0.12) 1px, transparent 0),
+                radial-gradient(rgba(120, 105, 85, 0.08) 1px, transparent 0);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+
+        .paper-texture-dark {
+            background-color: #0f1115;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+            background-size: 28px 28px;
+        }
+
+        /* 畫布禁用瀏覽器預設觸控捲動，確保手繪與雙指互動流暢 */
+        #artCanvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        /* 呼吸微光動畫 */
+        @keyframes breathe {
+            0%, 100% { opacity: 0.45; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.04); }
+        }
+        .animate-breathe {
+            animation: breathe 6s ease-in-out infinite;
+        }
+
+        /* 自訂滑桿與滾動條 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c0e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2f36;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #404752;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-amberWarm/30 selection:text-washi-50">
+
+    <!-- 頂部導覽列 -->
+    <header class="fixed top-0 inset-x-0 z-50 bg-ink-950/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#hero" class="flex items-center gap-3 group">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amberWarm via-moss to-resonance flex items-center justify-center shadow-lg shadow-moss/20 group-hover:scale-105 transition-transform">
+                    <span class="w-3 h-3 rounded-full bg-ink-950"></span>
+                </div>
+                <div class="leading-tight">
+                    <span class="font-serif font-semibold text-sm sm:text-base tracking-wider text-washi-50 block">筆觸的溫度與數位的共振</span>
+                    <span class="text-[10px] uppercase tracking-widest text-neutral-400 hidden sm:block">Slow Perception &amp; Digital Resonance</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm text-neutral-300">
+                <a href="#architecture" class="hover:text-amberWarm transition-colors">技術架構模組</a>
+                <a href="#scripts-overview" class="hover:text-amberWarm transition-colors">核心展演腳本</a>
+                <a href="#interactive-studio" class="px-4 py-2 rounded-full bg-washi-100 text-ink-950 font-medium hover:bg-amberWarm hover:text-ink-950 transition-all shadow-md">
+                    進入互動紙面
+                </a>
+            </nav>
+
+            <!-- 行動裝置快速按鈕 -->
+            <a href="#interactive-studio" class="md:hidden px-3 py-1.5 rounded-full bg-amberWarm text-ink-950 text-xs font-semibold">
+                開始體驗
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero 視覺區 -->
+    <section id="hero" class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden">
+        <!-- 背景氛圍光暈 -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-moss/15 rounded-full blur-3xl animate-breathe pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amberWarm/10 rounded-full blur-3xl animate-breathe pointer-events-none" style="animation-delay: 2.5s;"></div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm text-amberWarm mb-6">
+                <span class="w-2 h-2 rounded-full bg-moss animate-pulse"></span>
+                跨域創作與大眾教育計畫・多媒體互動原型
+            </div>
+            
+            <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-wide text-washi-50 leading-tight mb-6">
+                筆觸的溫度與數位的共振
+            </h1>
+            
+            <p class="text-base sm:text-xl text-neutral-300 font-light max-w-3xl mx-auto leading-relaxed mb-10">
+                以科技藝術重現書寫繪畫的<span class="text-washi-50 font-medium border-b border-amberWarm/60 pb-0.5">「慢感知」</span>與身體性。
+                透過多模態感測、情感運算與虛實投影，讓每一道停頓、摩擦與呼吸，都在紙面上長出有溫度的數位生命。
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#interactive-studio" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-amberWarm to-[#c48f5c] text-ink-950 font-semibold tracking-wide hover:brightness-110 transition-all shadow-lg shadow-amberWarm/20">
+                    立即體驗三大互動腳本 ↓
+                </a>
+                <a href="#architecture" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/5 border border-white/15 text-washi-100 hover:bg-white/10 transition-all">
+                    探索技術架構模組
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模組介紹區：技術架構模組 (Sensing -> Processing -> Output) -->
+    <section id="architecture" class="py-16 lg:py-24 border-t border-white/5 bg-ink-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-xs uppercase tracking-[0.2em] text-moss font-semibold">System Architecture</span>
+                <h2 class="font-serif text-2xl sm:text-4xl font-bold text-washi-50 mt-2 mb-4">三大技術架構模組</h2>
+                <p class="text-sm sm:text-base text-neutral-400">
+                    從實體桌面的微觀聲響與肢體動態出發，經由心理學演算法轉譯，最終以光影無縫回歸實體紙面。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                <!-- 模組一：Sensing -->
+                <div class="group rounded-2xl bg-ink-800/70 border border-white/10 p-6 sm:p-8 hover:border-moss/50 transition-all relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-moss/15 text-moss text-xs font-semibold tracking-wider">MODULE 01 / SENSING</span>
+                        <svg class="w-7 h-7 text-moss" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold text-washi-50 mb-3">多模態筆觸感知</h3>
+                    <ul class="space-y-3 text-sm text-neutral-300 leading-relaxed">
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-moss mt-2 shrink-0"></span>
+                            <span><strong class="text-washi-100">聽覺感知：</strong>高靈敏度接觸式麥克風（Contact Mic）貼附桌面，收錄筆尖摩擦紙張的高頻聲波（10kHz–20kHz），忠實反映紙張纖維質地。</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-moss mt-2 shrink-0"></span>
+                            <span><strong class="text-washi-100">動態感知：</strong>結合深度攝影機（Intel RealSense）追蹤手部骨架，或以數位繪圖板擷取精確的壓力（Pressure）與傾斜角（Tilt）。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 模組二：Processing -->
+                <div class="group rounded-2xl bg-ink-800/70 border border-white/10 p-6 sm:p-8 hover:border-amberWarm/50 transition-all relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-amberWarm/15 text-amberWarm text-xs font-semibold tracking-wider">MODULE 02 / PROCESSING</span>
+                        <svg class="w-7 h-7 text-amberWarm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold text-washi-50 mb-3">情感運算與生成</h3>
+                    <ul class="space-y-3 text-sm text-neutral-300 leading-relaxed">
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amberWarm mt-2 shrink-0"></span>
+                            <span><strong class="text-washi-100">生成核心：</strong>結合 TouchDesigner 與 Python 建立即時視覺與聲響運算引擎（本網頁以 HTML5 Canvas 與 Tone.js 實作互動模擬）。</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amberWarm mt-2 shrink-0"></span>
+                            <span><strong class="text-washi-100">演算法邏輯：</strong>依據 <em class="text-amberWarm">Mueller et al. (2018)</em> 身心理論，將「高壓／快速」映射為銳利幾何形態；「輕柔／慢速」映射為流體仿生形態。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 模組三：Output -->
+                <div class="group rounded-2xl bg-ink-800/70 border border-white/10 p-6 sm:p-8 hover:border-resonance/50 transition-all relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-resonance/15 text-resonance text-xs font-semibold tracking-wider">MODULE 03 / OUTPUT</span>
+                        <svg class="w-7 h-7 text-resonance" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-bold text-washi-50 mb-3">虛實疊加反饋</h3>
+                    <ul class="space-y-3 text-sm text-neutral-300 leading-relaxed">
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-resonance mt-2 shrink-0"></span>
+                            <span><strong class="text-washi-100">精準光雕投影：</strong>利用短焦投影機（Short-throw Projector）進行桌面 Projection Mapping，避免人體遮擋光線。</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-resonance mt-2 shrink-0"></span>
+                            <span><strong class="text-washi-100">紙上長出動畫：</strong>數位影像無縫疊加於實體紙張上，打破螢幕隔閡，創造筆墨與數位光影共生的魔幻錯覺。</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2.2 核心互動展演腳本概覽 -->
+    <section id="scripts-overview" class="py-12 lg:py-16 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <span class="text-xs uppercase tracking-[0.2em] text-amberWarm font-semibold">Interaction Scripts 2.2</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-washi-50 mt-1">核心互動展演腳本</h2>
+                </div>
+                <p class="text-sm text-neutral-400 max-w-md">
+                    點選下方任一腳本卡片，即可直接切換至對應的互動體驗畫布，感受速度、聲波與雙人共鳴的變化。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- 腳本一卡片 -->
+                <button onclick="selectScriptAndScroll('forest')" class="text-left rounded-2xl p-6 bg-ink-800/50 border border-white/10 hover:border-moss hover:bg-ink-800 transition-all group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-medium text-moss px-2.5 py-1 rounded-full bg-moss/10">訓練「耐心」</span>
+                        <span class="text-xs text-neutral-500 group-hover:text-moss transition-colors">點擊體驗 →</span>
+                    </div>
+                    <h3 class="font-serif text-lg font-bold text-washi-50 mb-1">腳本一：《森之呼吸》</h3>
+                    <p class="text-xs text-neutral-400 mb-3">The Breathing Forest</p>
+                    <p class="text-sm text-neutral-300 leading-relaxed">
+                        偵測運筆速度。慢速運筆生長出樹根般紮實的流體枝幹；若在紙上停留，該點將緩緩綻放數位花朵，引導放慢呼吸進入心流。快速運筆則依身心理論呈現銳利幾何。
+                    </p>
+                </button>
+
+                <!-- 腳本二卡片 -->
+                <button onclick="selectScriptAndScroll('stardust')" class="text-left rounded-2xl p-6 bg-ink-800/50 border border-white/10 hover:border-amberWarm hover:bg-ink-800 transition-all group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-medium text-amberWarm px-2.5 py-1 rounded-full bg-amberWarm/10">看見「微觀」</span>
+                        <span class="text-xs text-neutral-500 group-hover:text-amberWarm transition-colors">點擊體驗 →</span>
+                    </div>
+                    <h3 class="font-serif text-lg font-bold text-washi-50 mb-1">腳本二：《微塵星系》</h3>
+                    <p class="text-xs text-neutral-400 mb-3">Stardust &amp; Graphite</p>
+                    <p class="text-sm text-neutral-300 leading-relaxed">
+                        偵測筆尖摩擦聲振幅（支援真實麥克風或運筆模擬）。每一聲「沙沙」摩擦皆迸發星塵粒子；重複塗抹越黑、密度越高，引力越強，最終坍縮形成旋轉黑洞。
+                    </p>
+                </button>
+
+                <!-- 腳本三卡片 -->
+                <button onclick="selectScriptAndScroll('ripple')" class="text-left rounded-2xl p-6 bg-ink-800/50 border border-white/10 hover:border-resonance hover:bg-ink-800 transition-all group">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-medium text-resonance px-2.5 py-1 rounded-full bg-resonance/10">體驗「連結」</span>
+                        <span class="text-xs text-neutral-500 group-hover:text-resonance transition-colors">點擊體驗 →</span>
+                    </div>
+                    <h3 class="font-serif text-lg font-bold text-washi-50 mb-1">腳本三：《漣漪共振》</h3>
+                    <p class="text-xs text-neutral-400 mb-3">Resonance of Minds</p>
+                    <p class="text-sm text-neutral-300 leading-relaxed">
+                        模擬雙人面對面書寫（支援 AI 共鳴夥伴或雙人同屏多點觸控）。雙方筆觸激起水波紋，當波紋交會時，在交點生成和諧光色與五聲音階共鳴音樂。
+                    </p>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心互動工作坊 (Interactive Canvas Studio) -->
+    <section id="interactive-studio" class="py-12 lg:py-20 bg-ink-950 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- 控制台頂部：腳本切換與工具列 -->
+            <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-5">
+                <!-- 三大腳本切換 Tabs -->
+                <div class="inline-flex p-1.5 rounded-2xl bg-ink-800 border border-white/10 overflow-x-auto">
+                    <button id="tab-forest" onclick="switchScript('forest')" class="script-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex items-center justify-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-moss"></span>
+                        《森之呼吸》
+                    </button>
+                    <button id="tab-stardust" onclick="switchScript('stardust')" class="script-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex items-center justify-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amberWarm"></span>
+                        《微塵星系》
+                    </button>
+                    <button id="tab-ripple" onclick="switchScript('ripple')" class="script-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex items-center justify-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-resonance"></span>
+                        《漣漪共振》
+                    </button>
+                </div>
+
+                <!-- 功能按鈕群組 -->
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <!-- 音效開關 (Tone.js) -->
+                    <button id="btn-audio" onclick="toggleAudio()" class="px-3.5 py-2 rounded-xl bg-ink-800 border border-white/10 hover:border-amberWarm/60 text-xs sm:text-sm text-washi-100 flex items-center gap-2 transition-all">
+                        <span id="audio-icon">🔊</span>
+                        <span id="audio-label">音效：開啟</span>
+                    </button>
+
+                    <!-- 實體紙張投影模式切換 -->
+                    <button id="btn-paper" onclick="togglePaperMode()" class="px-3.5 py-2 rounded-xl bg-ink-800 border border-white/10 hover:border-washi-200/60 text-xs sm:text-sm text-washi-100 flex items-center gap-2 transition-all">
+                        <span id="paper-icon">📜</span>
+                        <span id="paper-label">投影：暗室光雕</span>
+                    </button>
+
+                    <!-- 腳本專屬動態按鈕 (例如：開啟真實麥克風 / 切換 AI 夥伴) -->
+                    <button id="btn-context-action" onclick="handleContextAction()" class="hidden px-3.5 py-2 rounded-xl bg-amberWarm/15 border border-amberWarm/40 hover:bg-amberWarm/25 text-xs sm:text-sm text-amberWarm flex items-center gap-2 transition-all">
+                        <span id="context-action-label">動作</span>
+                    </button>
+
+                    <!-- 清除畫布 -->
+                    <button onclick="clearCanvas()" class="px-3.5 py-2 rounded-xl bg-ink-800 border border-white/10 hover:bg-red-500/20 hover:border-red-400/50 text-xs sm:text-sm text-neutral-300 hover:text-red-200 transition-all">
+                        清除紙面
+                    </button>
+
+                    <!-- 儲存作品 -->
+                    <button onclick="saveArtwork()" class="px-3.5 py-2 rounded-xl bg-washi-100 text-ink-950 font-medium hover:bg-amberWarm text-xs sm:text-sm transition-all">
+                        儲存畫作
+                    </button>
+                </div>
+            </div>
+
+            <!-- 即時感測與情感運算儀表板 (模擬模組一與模組二數據流) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                <div class="rounded-xl bg-ink-900/90 border border-white/10 px-4 py-3 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-[11px] text-neutral-400">
+                        <span>運筆速度 (Velocity)</span>
+                        <span id="hud-speed-val" class="font-mono text-washi-100">0 px/f</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden">
+                        <div id="hud-speed-bar" class="h-full bg-moss transition-all duration-150" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-ink-900/90 border border-white/10 px-4 py-3 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-[11px] text-neutral-400">
+                        <span>筆壓／停駐 (Pressure/Dwell)</span>
+                        <span id="hud-pressure-val" class="font-mono text-washi-100">0.00</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden">
+                        <div id="hud-pressure-bar" class="h-full bg-amberWarm transition-all duration-150" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-ink-900/90 border border-white/10 px-4 py-3 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-[11px] text-neutral-400">
+                        <span>接觸式麥克風振幅 (10-20kHz)</span>
+                        <span id="hud-audio-val" class="font-mono text-washi-100">0 dB</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-ink-700 rounded-full mt-2 overflow-hidden">
+                        <div id="hud-audio-bar" class="h-full bg-resonance transition-all duration-100" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="rounded-xl bg-ink-900/90 border border-white/10 px-4 py-3 flex flex-col justify-between">
+                    <div class="flex items-center justify-between text-[11px] text-neutral-400">
+                        <span>Mueller (2018) 情感運算狀態</span>
+                        <span class="w-2 h-2 rounded-full bg-moss" id="hud-state-dot"></span>
+                    </div>
+                    <div id="hud-state-label" class="text-xs sm:text-sm font-serif font-semibold text-washi-50 mt-1 truncate">
+                        靜謐待命・流體仿生
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主互動畫布容器 (模擬短焦投影紙面) -->
+            <div id="canvas-wrapper" class="relative w-full h-[62vh] min-h-[420px] max-h-[720px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl paper-texture-dark transition-colors duration-500">
+                <canvas id="artCanvas" class="w-full h-full block"></canvas>
+
+                <!-- 投影對位角標裝飾 (Projection Mapping 視覺語彙) -->
+                <div class="pointer-events-none absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-white/25 rounded-tl"></div>
+                <div class="pointer-events-none absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-white/25 rounded-tr"></div>
+                <div class="pointer-events-none absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-white/25 rounded-bl"></div>
+                <div class="pointer-events-none absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-white/25 rounded-br"></div>
+
+                <!-- 雙人面對面分隔提示 (僅在腳本三顯示) -->
+                <div id="ripple-divider" class="hidden pointer-events-none absolute inset-y-6 left-1/2 -translate-x-1/2 border-l border-dashed border-resonance/30 flex flex-col justify-between items-center py-2">
+                    <span class="px-2 py-0.5 rounded bg-ink-950/70 text-[10px] text-amberWarm/90 -translate-x-16">體驗者 A</span>
+                    <span class="px-2 py-0.5 rounded bg-ink-950/70 text-[10px] text-resonance/90 translate-x-16" id="partner-badge">AI 共鳴夥伴</span>
+                </div>
+
+                <!-- 初始引導浮層 (開始繪畫後淡出) -->
+                <div id="canvas-guide" class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700 bg-ink-950/30 backdrop-blur-[1px]">
+                    <div class="max-w-md rounded-2xl bg-ink-950/80 border border-white/15 px-6 py-5 shadow-xl">
+                        <p id="guide-title" class="font-serif text-lg sm:text-xl font-bold text-washi-50 mb-2">《森之呼吸》—— 慢感知與耐心</p>
+                        <p id="guide-desc" class="text-xs sm:text-sm text-neutral-300 leading-relaxed mb-3">
+                            請試著以滑鼠、手指或觸控筆<strong class="text-moss">緩慢滑動</strong>，觀察線條如何長出紮實的樹根；若在紙面上<strong class="text-amberWarm">按住停留</strong>，數位花朵將隨呼吸綻放。
+                        </p>
+                        <span class="inline-block text-[11px] text-neutral-400">支援滑鼠、觸控螢幕與數位繪圖筆感壓</span>
+                    </div>
+                </div>
+
+                <!-- 自訂 Toast 訊息提示框 (取代 alert) -->
+                <div id="toast-box" class="pointer-events-none fixed bottom-6 right-6 z-50 translate-y-4 opacity-0 transition-all duration-300 rounded-xl bg-ink-800 border border-amberWarm/40 px-4 py-3 text-sm text-washi-50 shadow-xl flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-amberWarm"></span>
+                    <span id="toast-msg">提示訊息</span>
+                </div>
+            </div>
+
+            <!-- 底部腳本狀態說明列 -->
+            <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-neutral-400 px-1">
+                <p id="footer-script-tip">
+                    💡 <strong>慢感知提示：</strong>快速劃過會觸發 Mueller 理論中的銳利幾何線條；放慢速度並停留，才能喚醒森林的生命力。
+                </p>
+                <span class="font-mono text-[11px] text-neutral-500">PROJECTION MAPPING SIMULATOR v1.0</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾：計畫理念與教育願景 -->
+    <footer class="border-t border-white/10 bg-ink-900/60 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <h4 class="font-serif text-lg font-bold text-washi-50">筆觸的溫度與數位的共振</h4>
+                <p class="text-xs sm:text-sm text-neutral-400 mt-1">
+                    以科技藝術重現書寫繪畫的「慢感知」與身體性跨域創作與大眾教育計畫
+                </p>
+            </div>
+            <div class="text-xs text-neutral-500 text-center md:text-right">
+                <p>結合接觸式麥克風、深度感測、情感運算與短焦投影之互動體驗原型</p>
+                <p class="mt-1">建議佩戴耳機以獲得最佳摩擦聲響與生成式共鳴音效體驗</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 核心多媒體互動邏輯 (JavaScript) -->
+    <script>
+        /**
+         * ============================================================================
+         * 全域狀態與系統初始化
+         * ============================================================================
+         */
+        const canvas = document.getElementById('artCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+
+        // 離屏畫布：用於保留持久性的墨跡/樹根/石墨塗層，避免每一幀粒子動畫清空底圖
+        const persistentCanvas = document.createElement('canvas');
+        const pCtx = persistentCanvas.getContext('2d');
+
+        let width = 0;
+        let height = 0;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        // 當前展演腳本：'forest' | 'stardust' | 'ripple'
+        let currentScript = 'forest';
+        let isLightPaper = false; // false = 暗室光雕投影, true = 和紙暖色投影
+        let audioEnabled = true;
+        let audioInitialized = false;
+        let hasInteracted = false;
+
+        // 腳本二：真實麥克風收音狀態
+        let micActive = false;
+        let micAnalyser = null;
+        let micDataArray = null;
+        let micStream = null;
+
+        // 腳本三：AI 共鳴夥伴開關 (true = AI 夥伴, false = 雙人同屏)
+        let rippleAiPartner = true;
+
+        // 追蹤多點觸控與滑鼠指標 (支援雙人同屏與繪圖筆感壓)
+        const pointers = new Map();
+
+        // 視覺物件池
+        let flowers = [];        // 腳本一：綻放中的數位花朵
+        let particles = [];      // 腳本二：星塵粒子 & 腳本一微光
+        let gravityWells = [];   // 腳本二：石墨黑洞引力井
+        let ripples = [];        // 腳本三：水波紋
+        let resonanceBlooms = [];// 腳本三：波紋交會處的和諧光暈
+
+        // AI 共鳴夥伴狀態 (腳本三)
+        const aiPartner = {
+            x: 0,
+            y: 0,
+            targetX: 0,
+            targetY: 0,
+            angle: 0,
+            lastRippleTime: 0,
+            lastUserTime: 0
+        };
+
+        // 即時感測器數值 (用於更新 HUD 儀表板)
+        let telemetry = {
+            velocity: 0,
+            pressure: 0,
+            audioAmp: 0,
+            stateText: '靜謐待命・流體仿生',
+            stateColor: '#6b9080'
+        };
+
+        /**
+         * ============================================================================
+         * Tone.js 生成式音效與摩擦聲波合成引擎 (不使用外部音檔)
+         * ============================================================================
+         */
+        let reverb, polySynth, bloomSynth, frictionNoise, frictionFilter, frictionGain, droneOsc, droneGain;
+        const pentatonicScale = ['C4', 'D4', 'E4', 'G4', 'A4', 'C5', 'D5', 'E5', 'G5'];
+        let lastResonanceSoundTime = 0;
+        let lastBloomSoundTime = 0;
+
+        async function initAudioEngine() {
+            if (audioInitialized || !audioEnabled) return;
+            try {
+                await Tone.start();
+
+                // 空間殘響，營造展場沉浸感
+                reverb = new Tone.Reverb({ decay: 3.2, wet: 0.45 }).toDestination();
+
+                // 腳本三：五聲音階共鳴合成器
+                polySynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'sine' },
+                    envelope: { attack: 0.08, decay: 0.4, sustain: 0.2, release: 1.8 }
+                }).connect(reverb);
+                polySynth.volume.value = -10;
+
+                // 腳本一：花朵綻放的清澈木琴/風鈴音色
+                bloomSynth = new Tone.PolySynth(Tone.TriangleSynth || Tone.Synth, {
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 0.02, decay: 0.3, sustain: 0.05, release: 1.2 }
+                }).connect(reverb);
+                bloomSynth.volume.value = -12;
+
+                // 腳本二：模擬筆尖摩擦紙張的 10kHz-20kHz 高頻「沙沙」聲 (白噪音 + 高通/帶通濾波)
+                frictionGain = new Tone.Gain(0).toDestination();
+                frictionFilter = new Tone.Filter({ type: 'bandpass', frequency: 4800, Q: 1.8 }).connect(frictionGain);
+                frictionNoise = new Tone.Noise('pink').connect(frictionFilter);
+                frictionNoise.start();
+
+                // 腳本二：黑洞引力低頻共鳴
+                droneGain = new Tone.Gain(0).connect(reverb);
+                droneOsc = new Tone.Oscillator({ type: 'sine', frequency: 65.41 }).connect(droneGain); // C2
+                droneOsc.start();
+
+                audioInitialized = true;
+            } catch (err) {
+                console.warn('音效引擎啟動受限:', err);
+            }
+        }
+
+        function playBloomNote() {
+            if (!audioEnabled || !audioInitialized || !bloomSynth) return;
+            const now = performance.now();
+            if (now - lastBloomSoundTime < 220) return;
+            lastBloomSoundTime = now;
+            const note = pentatonicScale[Math.floor(Math.random() * pentatonicScale.length)];
+            bloomSynth.triggerAttackRelease(note, '8n');
+        }
+
+        function playResonanceChord() {
+            if (!audioEnabled || !audioInitialized || !polySynth) return;
+            const now = performance.now();
+            if (now - lastResonanceSoundTime < 350) return;
+            lastResonanceSoundTime = now;
+            const idx = Math.floor(Math.random() * (pentatonicScale.length - 2));
+            polySynth.triggerAttackRelease([pentatonicScale[idx], pentatonicScale[idx + 2]], '4n');
+        }
+
+        function updateFrictionSound(intensity) {
+            if (!audioEnabled || !audioInitialized || !frictionGain) return;
+            const targetGain = Math.min(intensity * 0.18, 0.22);
+            frictionGain.gain.rampTo(targetGain, 0.05);
+            if (frictionFilter) {
+                frictionFilter.frequency.rampTo(2800 + intensity * 6500, 0.08);
+            }
+        }
+
+        function updateGravityDrone(totalMass) {
+            if (!audioEnabled || !audioInitialized || !droneGain) return;
+            const target = currentScript === 'stardust' ? Math.min(totalMass * 0.008, 0.14) : 0;
+            droneGain.gain.rampTo(target, 0.3);
+        }
+
+        /**
+         * ============================================================================
+         * 畫布尺寸自適應與清空邏輯
+         * ============================================================================
+         */
+        function resizeCanvas() {
+            const rect = canvasWrapper.getBoundingClientRect();
+            const oldPersistent = document.createElement('canvas');
+            oldPersistent.width = persistentCanvas.width;
+            oldPersistent.height = persistentCanvas.height;
+            if (oldPersistent.width > 0 && oldPersistent.height > 0) {
+                oldPersistent.getContext('2d').drawImage(persistentCanvas, 0, 0);
+            }
+
+            width = rect.width;
+            height = rect.height;
+
+            canvas.width = Math.floor(width * dpr);
+            canvas.height = Math.floor(height * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            persistentCanvas.width = Math.floor(width * dpr);
+            persistentCanvas.height = Math.floor(height * dpr);
+            pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            // 保留縮放前的靜態筆觸
+            if (oldPersistent.width > 0 && oldPersistent.height > 0) {
+                pCtx.drawImage(oldPersistent, 0, 0, width, height);
+            }
+
+            // 重置 AI 夥伴起始位置
+            aiPartner.x = width * 0.75;
+            aiPartner.y = height * 0.5;
+            aiPartner.targetX = width * 0.72;
+            aiPartner.targetY = height * 0.5;
+        }
+
+        function clearCanvas(silent = false) {
+            pCtx.clearRect(0, 0, width, height);
+            ctx.clearRect(0, 0, width, height);
+            flowers = [];
+            particles = [];
+            gravityWells = [];
+            ripples = [];
+            resonanceBlooms = [];
+            updateGravityDrone(0);
+            if (!silent) showToast('已清空投影紙面，請重新開始創作');
+        }
+
+        /**
+         * ============================================================================
+         * 腳本切換與 UI 狀態同步
+         * ============================================================================
+         */
+        const scriptConfigs = {
+            forest: {
+                title: '《森之呼吸》—— 訓練「耐心」',
+                desc: '請試著<strong class="text-moss">緩慢運筆</strong>，觀察樹根般紮實的流體線條生長；在紙面<strong class="text-amberWarm">按住停留</strong>，將綻放數位花朵。若運筆過快，將依 Mueller 理論轉化為銳利幾何。',
+                tip: '💡 <strong>慢感知提示：</strong>放慢速度可生長出有機枝幹與分岔；定點停留 0.4 秒以上，數位花朵將隨呼吸綻放。',
+                actionBtn: null
+            },
+            stardust: {
+                title: '《微塵星系》—— 看見「微觀」',
+                desc: '模擬接觸式麥克風偵測筆尖摩擦紙張的「沙沙」聲，迸發星塵粒子。在同區域<strong class="text-amberWarm">重複塗抹越黑</strong>，引力越強，將吸引星塵形成旋轉黑洞。',
+                tip: '💡 <strong>微觀能量提示：</strong>重複塗抹同一區域可累積石墨質量並生成黑洞；您亦可點擊上方按鈕啟用真實麥克風收錄摩擦聲！',
+                actionBtn: '🎙️ 啟用真實麥克風收音'
+            },
+            ripple: {
+                title: '《漣漪共振》—— 體驗「連結」',
+                desc: '模擬雙人面對面書寫。您的筆觸會激起暖色水波紋，當與對側夥伴的冷色波紋<strong class="text-resonance">交會重疊</strong>時，將綻放和諧光色並觸發五聲音階共鳴。',
+                tip: '💡 <strong>非語言共感提示：</strong>觀察對側夥伴的節奏，試著以相近的頻率輕觸或滑動，創造最豐富的和諧波紋交會。',
+                actionBtn: '🤝 目前：AI 共鳴夥伴'
+            }
+        };
+
+        function switchScript(scriptName) {
+            currentScript = scriptName;
+            clearCanvas(true);
+
+            // 更新 Tab 樣式
+            document.querySelectorAll('.script-tab').forEach(btn => {
+                btn.classList.remove('bg-washi-100', 'text-ink-950', 'shadow-md');
+                btn.classList.add('text-neutral-300', 'hover:text-washi-50');
+            });
+            const activeTab = document.getElementById(`tab-${scriptName}`);
+            activeTab.classList.remove('text-neutral-300', 'hover:text-washi-50');
+            activeTab.classList.add('bg-washi-100', 'text-ink-950', 'shadow-md');
+
+            // 更新引導與底部提示
+            const cfg = scriptConfigs[scriptName];
+            document.getElementById('guide-title').textContent = cfg.title;
+            document.getElementById('guide-desc').innerHTML = cfg.desc;
+            document.getElementById('footer-script-tip').innerHTML = cfg.tip;
+
+            // 顯示引導浮層一下，讓使用者清楚新腳本規則
+            const guide = document.getElementById('canvas-guide');
+            guide.style.opacity = '1';
+            hasInteracted = false;
+
+            // 更新腳本專屬按鈕
+            const ctxBtn = document.getElementById('btn-context-action');
+            const ctxLabel = document.getElementById('context-action-label');
+            if (cfg.actionBtn) {
+                ctxBtn.classList.remove('hidden');
+                if (scriptName === 'stardust') {
+                    ctxLabel.textContent = micActive ? '🎙️ 麥克風收音中 (點擊關閉)' : '🎙️ 啟用真實麥克風收音';
+                } else if (scriptName === 'ripple') {
+                    ctxLabel.textContent = rippleAiPartner ? '🤝 目前：AI 共鳴夥伴' : '👥 目前：雙人同屏模式';
+                }
+            } else {
+                ctxBtn.classList.add('hidden');
+            }
+
+            // 腳本三分隔線顯示
+            const divider = document.getElementById('ripple-divider');
+            if (scriptName === 'ripple') {
+                divider.classList.remove('hidden');
+                document.getElementById('partner-badge').textContent = rippleAiPartner ? 'AI 共鳴夥伴' : '體驗者 B';
+            } else {
+                divider.classList.add('hidden');
+            }
+
+            // 停止不需要的摩擦聲
+            updateFrictionSound(0);
+        }
+
+        function selectScriptAndScroll(scriptName) {
+            switchScript(scriptName);
+            document.getElementById('interactive-studio').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /**
+         * ============================================================================
+         * 輔助控制功能 (音效、紙張模式、麥克風、儲存、Toast)
+         * ============================================================================
+         */
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('audio-icon').textContent = audioEnabled ? '🔊' : '🔇';
+            document.getElementById('audio-label').textContent = audioEnabled ? '音效：開啟' : '音效：靜音';
+            if (audioEnabled) {
+                initAudioEngine();
+                showToast('已開啟生成式音效與筆觸摩擦聲');
+            } else {
+                updateFrictionSound(0);
+                updateGravityDrone(0);
+                showToast('已切換為靜音模式');
+            }
+        }
+
+        function togglePaperMode() {
+            isLightPaper = !isLightPaper;
+            if (isLightPaper) {
+                canvasWrapper.classList.remove('paper-texture-dark');
+                canvasWrapper.classList.add('paper-texture-light');
+                document.getElementById('paper-label').textContent = '投影：實體和紙';
+                showToast('切換至「實體和紙」投影疊加模式');
+            } else {
+                canvasWrapper.classList.remove('paper-texture-light');
+                canvasWrapper.classList.add('paper-texture-dark');
+                document.getElementById('paper-label').textContent = '投影：暗室光雕';
+                showToast('切換至「暗室光雕」投影模式');
+            }
+        }
+
+        async function handleContextAction() {
+            if (currentScript === 'stardust') {
+                if (!micActive) {
+                    try {
+                        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        const source = audioCtx.createMediaStreamSource(micStream);
+                        micAnalyser = audioCtx.createAnalyser();
+                        micAnalyser.fftSize = 256;
+                        source.connect(micAnalyser);
+                        micDataArray = new Uint8Array(micAnalyser.frequencyBinCount);
+                        micActive = true;
+                        document.getElementById('context-action-label').textContent = '🎙️ 麥克風收音中 (點擊關閉)';
+                        showToast('已連接麥克風！試著敲擊桌面或摩擦紙張產生星塵');
+                    } catch (err) {
+                        showToast('無法存取麥克風，已維持筆觸速度模擬摩擦聲波');
+                    }
+                } else {
+                    if (micStream) micStream.getTracks().forEach(t => t.stop());
+                    micActive = false;
+                    micAnalyser = null;
+                    document.getElementById('context-action-label').textContent = '🎙️ 啟用真實麥克風收音';
+                    showToast('已關閉真實麥克風收音');
+                }
+            } else if (currentScript === 'ripple') {
+                rippleAiPartner = !rippleAiPartner;
+                document.getElementById('context-action-label').textContent = rippleAiPartner ? '🤝 目前：AI 共鳴夥伴' : '👥 目前：雙人同屏模式';
+                document.getElementById('partner-badge').textContent = rippleAiPartner ? 'AI 共鳴夥伴' : '體驗者 B';
+                showToast(rippleAiPartner ? '已啟用 AI 共鳴夥伴，將回應您的書寫節奏' : '已切換為雙人同屏模式（左側 A / 右側 B）');
+            }
+        }
+
+        function saveArtwork() {
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = canvas.width;
+            exportCanvas.height = canvas.height;
+            const eCtx = exportCanvas.getContext('2d');
+
+            // 填入背景色
+            eCtx.fillStyle = isLightPaper ? '#f6f2e9' : '#0f1115';
+            eCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+            // 疊加當前畫面
+            eCtx.drawImage(canvas, 0, 0);
+
+            const link = document.createElement('a');
+            link.download = `筆觸共振_${currentScript}_${Date.now()}.png`;
+            link.href = exportCanvas.toDataURL('image/png');
+            link.click();
+            showToast('已將您的數位紙面作品儲存為 PNG 圖片');
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-msg').textContent = msg;
+            box.classList.remove('translate-y-4', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('translate-y-4', 'opacity-0');
+            }, 3200);
+        }
+
+        /**
+         * ============================================================================
+         * 指標事件處理 (支援滑鼠、觸控螢幕、Apple Pencil / 繪圖板壓力感測)
+         * ============================================================================
+         */
+        function getCanvasPoint(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+                pressure: (e.pressure && e.pressure > 0 && e.pressure !== 0.5) ? e.pressure : 0.65
+            };
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            canvas.setPointerCapture(e.pointerId);
+            initAudioEngine();
+
+            if (!hasInteracted) {
+                hasInteracted = true;
+                document.getElementById('canvas-guide').style.opacity = '0';
+            }
+
+            const pt = getCanvasPoint(e);
+            pointers.set(e.pointerId, {
+                x: pt.x,
+                y: pt.y,
+                lastX: pt.x,
+                lastY: pt.y,
+                pressure: pt.pressure,
+                speed: 0,
+                dwellTime: 0,
+                lastMoveTime: performance.now(),
+                lastBloomTime: 0,
+                lastRippleTime: 0
+            });
+
+            // 腳本三：點擊當下即產生第一圈水波紋
+            if (currentScript === 'ripple') {
+                const owner = (!rippleAiPartner && pt.x > width / 2) ? 'B' : 'A';
+                spawnRipple(pt.x, pt.y, owner, pt.pressure);
+                aiPartner.lastUserTime = performance.now();
+            }
+        });
+
+        canvas.addEventListener('pointermove', (e) => {
+            if (!pointers.has(e.pointerId)) return;
+            const state = pointers.get(e.pointerId);
+            const pt = getCanvasPoint(e);
+
+            const dx = pt.x - state.x;
+            const dy = pt.y - state.y;
+            const dist = Math.hypot(dx, dy);
+
+            state.lastX = state.x;
+            state.lastY = state.y;
+            state.x = pt.x;
+            state.y = pt.y;
+            state.pressure = pt.pressure;
+            state.speed = state.speed * 0.65 + dist * 0.35; // 平滑速度
+
+            if (dist > 2.5) {
+                state.dwellTime = Math.max(0, state.dwellTime - 40);
+                state.lastMoveTime = performance.now();
+            }
+
+            // 根據當前腳本執行對應的筆觸生成邏輯
+            if (currentScript === 'forest') {
+                handleForestStroke(state, dist);
+            } else if (currentScript === 'stardust') {
+                handleStardustStroke(state, dist);
+            } else if (currentScript === 'ripple') {
+                handleRippleStroke(state, dist);
+            }
+
+            // 更新儀表板數據
+            updateTelemetry(state.speed, state.pressure, dist);
+        });
+
+        function handlePointerUp(e) {
+            if (pointers.has(e.pointerId)) {
+                pointers.delete(e.pointerId);
+            }
+            if (pointers.size === 0) {
+                updateFrictionSound(0);
+            }
+        }
+
+        canvas.addEventListener('pointerup', handlePointerUp);
+        canvas.addEventListener('pointercancel', handlePointerUp);
+
+        /**
+         * ============================================================================
+         * 腳本一：《森之呼吸》 (The Breathing Forest)
+         * 慢速運筆 -> 紮實樹根與有機分支；停留 -> 綻放數位花朵；快速 -> 銳利幾何 (Mueller 2018)
+         * ============================================================================
+         */
+        function handleForestStroke(state, dist) {
+            if (dist < 0.8) return;
+
+            const isFast = state.speed > 14; // 快速門檻
+
+            pCtx.save();
+            if (isFast) {
+                // Mueller et al. (2018)：高壓/快速 -> 銳利幾何形態
+                const jitter = Math.min(state.speed * 0.5, 16);
+                const angle = Math.atan2(state.y - state.lastY, state.x - state.lastX);
+                const perpX = Math.cos(angle + Math.PI / 2) * jitter;
+                const perpY = Math.sin(angle + Math.PI / 2) * jitter;
+
+                pCtx.strokeStyle = isLightPaper ? 'rgba(60, 72, 86, 0.55)' : 'rgba(180, 210, 235, 0.65)';
+                pCtx.lineWidth = Math.max(0.8, 2.2 - state.speed * 0.04);
+                pCtx.beginPath();
+                pCtx.moveTo(state.lastX, state.lastY);
+                pCtx.lineTo(state.x + (Math.random() - 0.5) * 6, state.y + (Math.random() - 0.5) * 6);
+                pCtx.stroke();
+
+                // 偶爾繪製銳利幾何三角碎片
+                if (Math.random() < 0.35) {
+                    pCtx.beginPath();
+                    pCtx.moveTo(state.lastX, state.lastY);
+                    pCtx.lineTo(state.x + perpX * 0.6, state.y + perpY * 0.6);
+                    pCtx.lineTo(state.x - perpX * 0.4, state.y - perpY * 0.4);
+                    pCtx.closePath();
+                    pCtx.strokeStyle = isLightPaper ? 'rgba(90, 105, 120, 0.35)' : 'rgba(130, 180, 220, 0.35)';
+                    pCtx.stroke();
+                }
+            } else {
+                // 慢速運筆 -> 如樹根般紮實的流體有機線條
+                const rootWidth = Math.max(2.5, (14 - state.speed) * 0.65 * state.pressure);
+                pCtx.lineCap = 'round';
+                pCtx.lineJoin = 'round';
+
+                // 主樹幹色澤 (深苔綠與暖木棕融合)
+                const baseColor = isLightPaper
+                    ? `rgba(62, 88, 72, ${0.72 + state.pressure * 0.2})`
+                    : `rgba(116, 165, 138, ${0.65 + state.pressure * 0.25})`;
+
+                pCtx.strokeStyle = baseColor;
+                pCtx.lineWidth = rootWidth;
+                pCtx.beginPath();
+                pCtx.moveTo(state.lastX, state.lastY);
+                pCtx.lineTo(state.x, state.y);
+                pCtx.stroke();
+
+                // 樹皮細微纖維疊層
+                pCtx.strokeStyle = isLightPaper ? 'rgba(110, 86, 62, 0.35)' : 'rgba(212, 163, 115, 0.35)';
+                pCtx.lineWidth = rootWidth * 0.35;
+                pCtx.beginPath();
+                pCtx.moveTo(state.lastX + 1.5, state.lastY + 1.5);
+                pCtx.lineTo(state.x + 1.5, state.y + 1.5);
+                pCtx.stroke();
+
+                // 慢速時機率性長出細小根鬚分支
+                if (state.speed < 7 && Math.random() < 0.28) {
+                    growOrganicTendril(state.x, state.y, Math.random() * Math.PI * 2, 12 + Math.random() * 20, 3);
+                }
+            }
+            pCtx.restore();
+        }
+
+        function growOrganicTendril(x, y, angle, length, depth) {
+            if (depth <= 0 || length < 3) return;
+            const nx = x + Math.cos(angle) * length;
+            const ny = y + Math.sin(angle) * length;
+
+            pCtx.save();
+            pCtx.strokeStyle = isLightPaper
+                ? `rgba(85, 118, 96, ${0.22 * depth})`
+                : `rgba(135, 195, 155, ${0.2 * depth})`;
+            pCtx.lineWidth = depth * 0.65;
+            pCtx.lineCap = 'round';
+            pCtx.beginPath();
+            pCtx.moveTo(x, y);
+            pCtx.lineTo(nx, ny);
+            pCtx.stroke();
+            pCtx.restore();
+
+            if (Math.random() < 0.7) {
+                growOrganicTendril(nx, ny, angle + (Math.random() - 0.5) * 0.9, length * 0.68, depth - 1);
+            }
+        }
+
+        function spawnDigitalFlower(x, y) {
+            const palettes = [
+                { petal: '#e9c46a', center: '#f4a261' },
+                { petal: '#f28482', center: '#f6bd60' },
+                { petal: '#95d5b2', center: '#d8f3dc' },
+                { petal: '#cdb4db', center: '#ffafcc' }
+            ];
+            const palette = palettes[Math.floor(Math.random() * palettes.length)];
+            flowers.push({
+                x, y,
+                petals: 5 + Math.floor(Math.random() * 4),
+                maxRadius: 16 + Math.random() * 24,
+                progress: 0,
+                rotation: Math.random() * Math.PI * 2,
+                color: palette.petal,
+                centerColor: palette.center,
+                baked: false
+            });
+            playBloomNote();
+        }
+
+        /**
+         * ============================================================================
+         * 腳本二：《微塵星系》 (Stardust & Graphite)
+         * 摩擦振幅 -> 迸發星塵粒子；重複塗抹越黑 -> 累積石墨質量 -> 引力黑洞
+         * ============================================================================
+         */
+        function handleStardustStroke(state, dist) {
+            if (dist < 0.5) return;
+
+            // 計算摩擦強度 (結合速度與筆壓)
+            const frictionIntensity = Math.min((dist * 0.08 + state.pressure * 0.4), 1.5);
+            updateFrictionSound(frictionIntensity);
+
+            // 1. 在離屏紙面上留下石墨塗抹痕跡
+            pCtx.save();
+            const graphiteColor = isLightPaper ? 'rgba(32, 34, 38, 0.16)' : 'rgba(200, 205, 215, 0.09)';
+            pCtx.strokeStyle = graphiteColor;
+            pCtx.lineWidth = 8 + state.pressure * 10;
+            pCtx.lineCap = 'round';
+            pCtx.beginPath();
+            pCtx.moveTo(state.lastX, state.lastY);
+            pCtx.lineTo(state.x, state.y);
+            pCtx.stroke();
+            pCtx.restore();
+
+            // 2. 累積石墨質量至鄰近引力井，或建立新引力井
+            let merged = false;
+            for (const well of gravityWells) {
+                const d = Math.hypot(well.x - state.x, well.y - state.y);
+                if (d < 55) {
+                    well.mass = Math.min(well.mass + 0.45 * state.pressure, 42);
+                    // 重心微微向筆觸移動
+                    well.x = well.x * 0.96 + state.x * 0.04;
+                    well.y = well.y * 0.96 + state.y * 0.04;
+                    merged = true;
+                    break;
+                }
+            }
+            if (!merged && gravityWells.length < 10) {
+                gravityWells.push({
+                    x: state.x,
+                    y: state.y,
+                    mass: 1.2,
+                    angle: 0
+                });
+            }
+
+            // 3. 依照摩擦振幅迸發發光星塵粒子
+            const count = Math.min(Math.floor(2 + frictionIntensity * 6), 10);
+            spawnStardustParticles(state.x, state.y, count, frictionIntensity);
+        }
+
+        function spawnStardustParticles(x, y, count, energy) {
+            const starColors = ['#fff3d6', '#ffd180', '#90caf9', '#f8bbd0', '#e0f2f1'];
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const spd = (0.4 + Math.random() * 2.2) * Math.max(0.6, energy);
+                particles.push({
+                    x: x + (Math.random() - 0.5) * 10,
+                    y: y + (Math.random() - 0.5) * 10,
+                    vx: Math.cos(angle) * spd,
+                    vy: Math.sin(angle) * spd,
+                    size: 1 + Math.random() * 2.4,
+                    alpha: 0.75 + Math.random() * 0.25,
+                    life: 1.0,
+                    decay: 0.002 + Math.random() * 0.004,
+                    color: starColors[Math.floor(Math.random() * starColors.length)]
+                });
+            }
+            // 控制粒子上限以保持 60fps 流暢度
+            if (particles.length > 520) {
+                particles.splice(0, particles.length - 520);
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 腳本三：《漣漪共振》 (Resonance of Minds)
+         * 雙人面對面書寫 -> 產生水波紋 -> 波紋交會時生成和諧光色與共鳴音效
+         * ============================================================================
+         */
+        function handleRippleStroke(state, dist) {
+            if (dist < 1) return;
+            const now = performance.now();
+            const owner = (!rippleAiPartner && state.x > width / 2) ? 'B' : 'A';
+
+            // 繪製輕柔淡出的書寫墨痕
+            pCtx.save();
+            pCtx.strokeStyle = owner === 'A'
+                ? (isLightPaper ? 'rgba(212, 130, 80, 0.35)' : 'rgba(235, 175, 115, 0.35)')
+                : (isLightPaper ? 'rgba(70, 125, 180, 0.35)' : 'rgba(114, 168, 216, 0.35)');
+            pCtx.lineWidth = 2.5 * state.pressure;
+            pCtx.lineCap = 'round';
+            pCtx.beginPath();
+            pCtx.moveTo(state.lastX, state.lastY);
+            pCtx.lineTo(state.x, state.y);
+            pCtx.stroke();
+            pCtx.restore();
+
+            // 節流產生擴散水波紋
+            if (now - state.lastRippleTime > 140) {
+                spawnRipple(state.x, state.y, owner, state.pressure);
+                state.lastRippleTime = now;
+                if (owner === 'A') {
+                    aiPartner.lastUserTime = now;
+                }
+            }
+        }
+
+        function spawnRipple(x, y, owner, strength = 0.7) {
+            ripples.push({
+                id: Math.random(),
+                x, y,
+                owner, // 'A' (暖琥珀) or 'B' (靜謐藍)
+                radius: 4,
+                maxRadius: 150 + strength * 140,
+                speed: 1.5 + strength * 0.9,
+                alpha: 0.85,
+                intersectedWith: new Set()
+            });
+            if (ripples.length > 45) ripples.shift();
+        }
+
+        // 計算兩圓交點，用於在波紋交會處綻放和諧光暈與音效
+        function checkRippleIntersections() {
+            for (let i = 0; i < ripples.length; i++) {
+                const r1 = ripples[i];
+                if (r1.owner !== 'A') continue;
+
+                for (let j = 0; j < ripples.length; j++) {
+                    const r2 = ripples[j];
+                    if (r2.owner !== 'B') continue;
+                    if (r1.intersectedWith.has(r2.id)) continue;
+
+                    const dx = r2.x - r1.x;
+                    const dy = r2.y - r1.y;
+                    const d = Math.hypot(dx, dy);
+
+                    // 兩圓波前正好接觸重疊
+                    if (d > 10 && d < r1.radius + r2.radius && d > Math.abs(r1.radius - r2.radius)) {
+                        // 計算交點座標
+                        const a = (r1.radius * r1.radius - r2.radius * r2.radius + d * d) / (2 * d);
+                        const h = Math.sqrt(Math.max(0, r1.radius * r1.radius - a * a));
+                        const xm = r1.x + (a * dx) / d;
+                        const ym = r1.y + (a * dy) / d;
+
+                        const ix1 = xm + (h * dy) / d;
+                        const iy1 = ym - (h * dx) / d;
+
+                        r1.intersectedWith.add(r2.id);
+
+                        // 在交會處生成和諧共振光暈
+                        resonanceBlooms.push({
+                            x: ix1,
+                            y: iy1,
+                            radius: 6,
+                            maxRadius: 48 + Math.random() * 26,
+                            alpha: 0.95,
+                            hue: 42 + Math.random() * 140 // 暖金至翡翠和諧色譜
+                        });
+
+                        // 觸發五聲音階和弦共鳴
+                        playResonanceChord();
+                    }
+                }
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 儀表板即時更新 (HUD Telemetry)
+         * ============================================================================
+         */
+        function updateTelemetry(speed, pressure, dist) {
+            telemetry.velocity = speed;
+            telemetry.pressure = pressure;
+            telemetry.audioAmp = Math.min(100, dist * 4.5 + pressure * 25);
+
+            if (currentScript === 'forest') {
+                if (speed > 14) {
+                    telemetry.stateText = '高壓快速・銳利幾何';
+                    telemetry.stateColor = '#72a8d8';
+                } else if (speed < 2) {
+                    telemetry.stateText = '深沉停駐・花朵綻放';
+                    telemetry.stateColor = '#d4a373';
+                } else {
+                    telemetry.stateText = '輕柔慢速・流體仿生';
+                    telemetry.stateColor = '#6b9080';
+                }
+            } else if (currentScript === 'stardust') {
+                telemetry.stateText = gravityWells.some(w => w.mass > 10)
+                    ? '高密度石墨・引力黑洞生成'
+                    : '高頻摩擦・微塵星系迸發';
+                telemetry.stateColor = '#d4a373';
+            } else {
+                telemetry.stateText = resonanceBlooms.length > 0
+                    ? '波紋交會・和諧共鳴中'
+                    : '雙向傾聽・水波擴散';
+                telemetry.stateColor = '#72a8d8';
+            }
+        }
+
+        function renderHUD() {
+            // 數值自然衰減
+            if (pointers.size === 0) {
+                telemetry.velocity *= 0.88;
+                telemetry.pressure *= 0.88;
+                telemetry.audioAmp *= 0.85;
+            }
+
+            document.getElementById('hud-speed-val').textContent = `${telemetry.velocity.toFixed(1)} px/f`;
+            document.getElementById('hud-speed-bar').style.width = `${Math.min(telemetry.velocity * 3.5, 100)}%`;
+
+            document.getElementById('hud-pressure-val').textContent = telemetry.pressure.toFixed(2);
+            document.getElementById('hud-pressure-bar').style.width = `${Math.min(telemetry.pressure * 100, 100)}%`;
+
+            const dbVal = Math.round(telemetry.audioAmp * 0.85);
+            document.getElementById('hud-audio-val').textContent = `${dbVal} dB`;
+            document.getElementById('hud-audio-bar').style.width = `${Math.min(telemetry.audioAmp, 100)}%`;
+
+            document.getElementById('hud-state-label').textContent = telemetry.stateText;
+            document.getElementById('hud-state-dot').style.backgroundColor = telemetry.stateColor;
+        }
+
+        /**
+         * ============================================================================
+         * 主動畫渲染迴圈 (60 FPS Animation Loop)
+         * ============================================================================
+         */
+        function animate(now) {
+            // 1. 清除主畫布並繪製底層持久筆觸
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(persistentCanvas, 0, 0, width, height);
+
+            // 腳本三：讓底層水墨筆觸非常緩慢地淡化，呈現「水寫紙」的留白意境
+            if (currentScript === 'ripple' && Math.random() < 0.25) {
+                pCtx.save();
+                pCtx.globalCompositeOperation = 'destination-out';
+                pCtx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                pCtx.fillRect(0, 0, width, height);
+                pCtx.restore();
+            }
+
+            // ------------------------------------------------------------------------
+            // 腳本一更新：偵測停留時間以綻放花朵
+            // ------------------------------------------------------------------------
+            if (currentScript === 'forest') {
+                pointers.forEach((state) => {
+                    const idleMs = now - state.lastMoveTime;
+                    if (idleMs > 180) {
+                        state.dwellTime += 16.6;
+                        telemetry.pressure = Math.min(1, state.dwellTime / 600);
+                        telemetry.stateText = '深沉停駐・花朵綻放';
+                        telemetry.stateColor = '#d4a373';
+
+                        // 每停留約 420ms 綻放一朵數位花
+                        if (state.dwellTime > 380 && now - state.lastBloomTime > 520) {
+                            spawnDigitalFlower(
+                                state.x + (Math.random() - 0.5) * 18,
+                                state.y + (Math.random() - 0.5) * 18
+                            );
+                            state.lastBloomTime = now;
+                        }
+                    }
+                });
+
+                // 繪製綻放動畫中的花朵，完全綻放後烘焙至持久畫布
+                for (let i = flowers.length - 1; i >= 0; i--) {
+                    const f = flowers[i];
+                    f.progress = Math.min(1, f.progress + 0.025);
+                    drawFlower(ctx, f);
+
+                    if (f.progress >= 1 && !f.baked) {
+                        drawFlower(pCtx, f);
+                        f.baked = true;
+                        flowers.splice(i, 1);
+                    }
+                }
+            }
+
+            // ------------------------------------------------------------------------
+            // 腳本二更新：真實麥克風振幅偵測 + 星塵重力物理 + 黑洞光環
+            // ------------------------------------------------------------------------
+            if (currentScript === 'stardust') {
+                // 若已開啟真實麥克風，收錄環境/摩擦聲振幅
+                if (micActive && micAnalyser && micDataArray) {
+                    micAnalyser.getByteFrequencyData(micDataArray);
+                    // 取高頻段能量模擬筆尖摩擦紙張聲
+                    let highFreqSum = 0;
+                    const startBin = Math.floor(micDataArray.length * 0.4);
+                    for (let i = startBin; i < micDataArray.length; i++) {
+                        highFreqSum += micDataArray[i];
+                    }
+                    const avg = highFreqSum / (micDataArray.length - startBin);
+                    if (avg > 14) {
+                        telemetry.audioAmp = Math.min(100, avg * 1.4);
+                        const spawnX = width * (0.2 + Math.random() * 0.6);
+                        const spawnY = height * (0.2 + Math.random() * 0.6);
+                        spawnStardustParticles(spawnX, spawnY, Math.floor(avg / 10), avg / 45);
+                    }
+                }
+
+                // 繪製石墨黑洞與吸積盤
+                let totalMass = 0;
+                for (const well of gravityWells) {
+                    totalMass += well.mass;
+                    well.angle += 0.02 + well.mass * 0.001;
+
+                    if (well.mass > 4) {
+                        const r = Math.min(48, 8 + well.mass * 1.1);
+                        const grad = ctx.createRadialGradient(well.x, well.y, r * 0.15, well.x, well.y, r * 2.2);
+                        if (isLightPaper) {
+                            grad.addColorStop(0, 'rgba(15, 16, 20, 0.92)');
+                            grad.addColorStop(0.35, 'rgba(65, 50, 35, 0.35)');
+                            grad.addColorStop(1, 'rgba(246, 242, 233, 0)');
+                        } else {
+                            grad.addColorStop(0, 'rgba(0, 0, 0, 0.96)');
+                            grad.addColorStop(0.32, 'rgba(212, 163, 115, 0.38)');
+                            grad.addColorStop(0.65, 'rgba(114, 168, 216, 0.12)');
+                            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                        }
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(well.x, well.y, r * 2.2, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // 旋轉吸積盤微光環
+                        ctx.save();
+                        ctx.translate(well.x, well.y);
+                        ctx.rotate(well.angle);
+                        ctx.strokeStyle = isLightPaper ? 'rgba(180, 120, 60, 0.4)' : 'rgba(255, 220, 160, 0.45)';
+                        ctx.lineWidth = 1.2;
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, r * 1.35, r * 0.45, 0, 0, Math.PI * 1.4);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+                updateGravityDrone(totalMass);
+
+                // 更新並繪製受引力影響的星塵粒子
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+
+                    // 計算每個黑洞對粒子的萬有引力與切線軌道力
+                    for (const well of gravityWells) {
+                        const dx = well.x - p.x;
+                        const dy = well.y - p.y;
+                        const distSq = dx * dx + dy * dy + 120;
+                        const dist = Math.sqrt(distSq);
+                        const force = (well.mass * 2.6) / distSq;
+
+                        // 向心引力 + 微弱切線旋轉力，形成星系漩渦
+                        p.vx += (dx / dist) * force - (dy / dist) * force * 0.45;
+                        p.vy += (dy / dist) * force + (dx / dist) * force * 0.45;
+                    }
+
+                    p.vx *= 0.985;
+                    p.vy *= 0.985;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life -= p.decay;
+
+                    if (p.life <= 0) {
+                        particles.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = p.life * p.alpha;
+                    ctx.fillStyle = isLightPaper ? '#b87a3d' : p.color;
+                    ctx.shadowColor = isLightPaper ? 'rgba(184, 122, 61, 0.5)' : p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // ------------------------------------------------------------------------
+            // 腳本三更新：AI 共鳴夥伴 + 水波紋擴散 + 交會檢測
+            // ------------------------------------------------------------------------
+            if (currentScript === 'ripple') {
+                // 若啟用 AI 夥伴，緩慢在右側書寫並回應使用者節奏
+                if (rippleAiPartner) {
+                    aiPartner.angle += 0.014;
+                    const activeBoost = (now - aiPartner.lastUserTime < 3500) ? 1 : 0.4;
+                    const desiredX = width * 0.72 + Math.cos(aiPartner.angle * 0.8) * (width * 0.14);
+                    const desiredY = height * 0.5 + Math.sin(aiPartner.angle * 1.15) * (height * 0.28);
+
+                    const prevX = aiPartner.x;
+                    const prevY = aiPartner.y;
+                    aiPartner.x += (desiredX - aiPartner.x) * 0.04;
+                    aiPartner.y += (desiredY - aiPartner.y) * 0.04;
+
+                    // 繪製 AI 夥伴優雅的光點游標
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(114, 168, 216, 0.85)';
+                    ctx.shadowColor = '#72a8d8';
+                    ctx.shadowBlur = 12;
+                    ctx.beginPath();
+                    ctx.arc(aiPartner.x, aiPartner.y, 4.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    // AI 夥伴柔和軌跡
+                    pCtx.save();
+                    pCtx.strokeStyle = 'rgba(114, 168, 216, 0.18)';
+                    pCtx.lineWidth = 2;
+                    pCtx.beginPath();
+                    pCtx.moveTo(prevX, prevY);
+                    pCtx.lineTo(aiPartner.x, aiPartner.y);
+                    pCtx.stroke();
+                    pCtx.restore();
+
+                    // 依節奏定期激起冷色波紋
+                    const interval = activeBoost > 0.5 ? 950 : 1900;
+                    if (now - aiPartner.lastRippleTime > interval) {
+                        spawnRipple(aiPartner.x, aiPartner.y, 'B', 0.72);
+                        aiPartner.lastRippleTime = now;
+                    }
+                }
+
+                // 檢查雙人波紋交會
+                checkRippleIntersections();
+
+                // 更新與繪製所有水波紋
+                for (let i = ripples.length - 1; i >= 0; i--) {
+                    const r = ripples[i];
+                    r.radius += r.speed;
+                    r.alpha = Math.max(0, 1 - r.radius / r.maxRadius);
+
+                    if (r.alpha <= 0.01) {
+                        ripples.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.strokeStyle = r.owner === 'A'
+                        ? (isLightPaper ? `rgba(205, 115, 65, ${r.alpha * 0.75})` : `rgba(232, 175, 116, ${r.alpha * 0.75})`)
+                        : (isLightPaper ? `rgba(60, 120, 185, ${r.alpha * 0.75})` : `rgba(114, 168, 216, ${r.alpha * 0.75})`);
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // 內層副波紋
+                    if (r.radius > 16) {
+                        ctx.globalAlpha = r.alpha * 0.35;
+                        ctx.beginPath();
+                        ctx.arc(r.x, r.y, r.radius - 12, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+
+                // 更新與繪製波紋交會處的和諧共鳴光暈
+                for (let i = resonanceBlooms.length - 1; i >= 0; i--) {
+                    const b = resonanceBlooms[i];
+                    b.radius += 1.1;
+                    b.alpha *= 0.965;
+
+                    if (b.alpha <= 0.02) {
+                        resonanceBlooms.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    const grad = ctx.createRadialGradient(b.x, b.y, 1, b.x, b.y, b.radius);
+                    grad.addColorStop(0, `hsla(${b.hue}, 85%, 78%, ${b.alpha})`);
+                    grad.addColorStop(0.5, `hsla(${b.hue + 25}, 75%, 65%, ${b.alpha * 0.45})`);
+                    grad.addColorStop(1, `hsla(${b.hue}, 70%, 60%, 0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // 更新即時感測儀表板
+            renderHUD();
+
+            requestAnimationFrame(animate);
+        }
+
+        // 繪製數位花朵函式 (用於腳本一)
+        function drawFlower(targetCtx, f) {
+            const easeOut = 1 - Math.pow(1 - f.progress, 3);
+            const r = f.maxRadius * easeOut;
+
+            targetCtx.save();
+            targetCtx.translate(f.x, f.y);
+            targetCtx.rotate(f.rotation + easeOut * 0.4);
+            targetCtx.globalAlpha = 0.85 * easeOut;
+
+            for (let p = 0; p < f.petals; p++) {
+                targetCtx.rotate((Math.PI * 2) / f.petals);
+                targetCtx.fillStyle = f.color;
+                targetCtx.beginPath();
+                targetCtx.ellipse(r * 0.55, 0, r * 0.55, r * 0.24, 0, 0, Math.PI * 2);
+                targetCtx.fill();
+            }
+
+            // 花蕊
+            targetCtx.fillStyle = f.centerColor;
+            targetCtx.beginPath();
+            targetCtx.arc(0, 0, Math.max(2.5, r * 0.22), 0, Math.PI * 2);
+            targetCtx.fill();
+            targetCtx.restore();
+        }
+
+        /**
+         * ============================================================================
+         * 啟動程序 (Window Onload)
+         * ============================================================================
+         */
+        window.addEventListener('resize', resizeCanvas);
+
+        window.onload = function () {
+            resizeCanvas();
+            switchScript('forest');
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
